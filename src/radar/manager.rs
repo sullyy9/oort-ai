@@ -1,7 +1,7 @@
 use oort_api::prelude::debug;
 
 use super::{
-    contacts::{Contact, ContactBoard, TrackedContact},
+    contacts::{Contact, ContactBoard, SearchContact, TrackedContact},
     math::kinematics::{Acceleration, Position},
     search::ScanningRadar,
     track::TrackingRadar,
@@ -90,6 +90,31 @@ impl RadarManager {
     }
 
     pub fn set_job_rotation(&mut self, rotation: &[RadarJob]) {
+        // If a currently tracked target will stop being tracked in the new rotation, demote it
+        // to a search contact in the board.
+        let tracked_id = |job: &RadarJob| {
+            if let RadarJob::Track(id) = job {
+                Some(*id)
+            } else {
+                None
+            }
+        };
+
+        let new_tracked: Vec<usize> = rotation.iter().filter_map(tracked_id).collect();
+        let old_tracked = self.job_rotation.iter().filter_map(tracked_id);
+
+        let to_untrack = old_tracked.filter(|id| !new_tracked.contains(id));
+
+        for id in to_untrack {
+            let old_contact = self.contacts.take(id);
+            if let Some(Contact::Tracked(contact)) = old_contact {
+                let contact = Contact::Scanned(SearchContact::from(contact));
+                self.contacts.insert(id, contact);
+            } else if old_contact.is_some() {
+                panic!("Expected to get a tracked contact but got {old_contact:?}");
+            }
+        }
+
         self.job_rotation = rotation.to_owned();
     }
 
