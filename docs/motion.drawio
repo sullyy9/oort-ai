@@ -1,0 +1,22 @@
+<mxfile host="65bd71144e">
+    <diagram id="_AMdhyooneYSgVfxqHFO" name="Page-1">
+        <mxGraphModel dx="-546" dy="465" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="1" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="2" value="&lt;b&gt;&lt;u&gt;Motion of a ship&lt;/u&gt;&lt;/b&gt;&lt;br&gt;$$S(t) = S_0 + V_0t + \frac{1}{2}At^2$$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="920" y="80" width="550" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="4" value="&lt;b&gt;&lt;u&gt;Intercept of 2 vessels:&lt;/u&gt;&lt;br&gt;&lt;/b&gt;&lt;br&gt;&lt;br&gt;$$S_a(t) = S_b(t)$$&lt;br&gt;&lt;br&gt;Expantion:&lt;br&gt;$${S_a}_0 + {V_a}_0t + \frac{1}{2}A_at^2 =&amp;nbsp;{S_b}_0 + {V_b}_0t + \frac{1}{2}A_bt^2$$&lt;br&gt;&lt;br&gt;Square both sides:&lt;br&gt;$$AA = |A|^2$$&lt;br&gt;&lt;br&gt;$$\frac{1}{4}|A_a|^2t^4&amp;nbsp;+ A_a{V_a}_0t^3&amp;nbsp;+ A_a{S_a}_0t^2&amp;nbsp;+ |{V_a}_0|^2t^2&amp;nbsp;+ 2{V_a}_0{S_a}_0t&amp;nbsp;+ |{S_a}_0|^2 = \frac{1}{4}|A_b|^2t^4&amp;nbsp;+ A_b{V_b}_0t^3&amp;nbsp;+ A_b{S_b}_0t^2&amp;nbsp;+ |{V_b}_0|^2t^2&amp;nbsp;+ 2{V_b}_0{S_b}_0t&amp;nbsp;+ |{S_b}_0|^2$$&lt;br&gt;&lt;br&gt;Re-arrange:&lt;br&gt;$$\frac{1}{4}(|A_a|^2 - |A_b|^2)t^4 + (A_a{V_a}_0 - A_b{V_b}_0)t^3 + (A_a{S_a}_0 + |{V_a}_0|^2 - A_b{S_b}_0 - |{V_b}_0|^2)t^2 + 2({V_a}_0{S_a}_0 -{V_b}_0{S_b}_0)t + |{S_a}_0|^2 - |{S_b}_0|^2 = 0$$&lt;br&gt;&lt;br&gt;Take a's velocity and position as 0 and b's as relative to a's. This cancels out a's unknown acceleation vectors.&lt;br&gt;$${V_r}_0 = {V_b}_0 - {V_a}_0$$&lt;br&gt;$${S_r}_0 = {S_b}_0 - {S_a}_0$$&lt;br&gt;&lt;br&gt;$$\frac{1}{4}(|A_a|^2 - |A_b|^2)t^4 - (A_b{V_r}_0)t^3 - (A_b{S_r}_0 + |{V_r}_0|^2)t^2 - 2({V_r}_0{S_r}_0)t - |{S_r}_0|^2 = 0$$&lt;br&gt;&lt;br&gt;Can be solved using quartic formula where:&lt;br&gt;$$a = \frac{1}{4}(|A_a|^2 - |A_b|^2)$$&lt;br&gt;$$b = -A_b{V_r}_0$$&lt;br&gt;$$c = -A_b{S_r}_0 - |{V_r}_0|^2$$&lt;br&gt;$$d = -2({V_r}_0{S_r}_0)$$&lt;br&gt;$$e = -|{S_r}_0|^2$$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="920" y="201" width="880" height="999" as="geometry"/>
+                </mxCell>
+                <mxCell id="9" value="&lt;b&gt;&lt;u&gt;Acceleration&lt;br&gt;&lt;/u&gt;&lt;/b&gt;$$a_s$$&lt;br&gt;$$a_f$$&lt;br&gt;&lt;br&gt;&lt;br&gt;$$S(t) = S_0 + V_0t + \frac{1}{2}At^2$$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="2520" y="80" width="550" height="400" as="geometry"/>
+                </mxCell>
+                <mxCell id="10" value="&lt;b&gt;&lt;u&gt;https://www.desmos.com/3d/523db2d161&lt;/u&gt;&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b style=&quot;text-decoration-line: underline;&quot;&gt;Complete solution:&lt;br&gt;&lt;/b&gt;By using relative velocity and position (thus taking our own position and velocity as 0) our own acceleration is canceled out.&lt;br&gt;https://math.stackexchange.com/questions/3805919/determining-acceleration-to-intercept-accelerating-object" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="920" y="1240" width="550" height="240" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

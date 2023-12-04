@@ -1,0 +1,19 @@
+<mxfile host="65bd71144e">
+    <diagram id="oMWmP5yIQb9v1oDgImQl" name="Page-1">
+        <mxGraphModel dx="-285" dy="1956" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="1" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="2" value="$$ S_{contact} = S_{emitter} +[d_{noisy}, 0] R_{noisy}$$&lt;br&gt;$$ d_{noisy}=|S_{reflector}-S_{emiter}| +{rng} * (D_{noise} * E)&amp;nbsp;$$&lt;br&gt;$$ S_{relative} = S_{reflector} - S_{emitter}$$&lt;br&gt;&lt;br&gt;Angle between x axis and reflector&lt;br&gt;$$ \theta_{reflector} $$&lt;br&gt;&lt;br&gt;Rnoise is rotation vector of theta noise:&lt;br&gt;$$ \theta_{noisy} = \theta_{reflector} + {rng} + (B_{noise} * E)$$&lt;br&gt;$$ E = 10^{\frac{{-snr}}{10}}$$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="881" y="40" width="360" height="520" as="geometry"/>
+                </mxCell>
+                <mxCell id="3" value="2 components:&lt;br&gt;&lt;br&gt;Bearing error which is added to the actual bearing:&lt;br&gt;$$ {rng} * (B_{noise} * E) $$&lt;br&gt;$$ E = 10^{\frac{{-snr}}{10}} $$&lt;br&gt;&lt;br&gt;The resulting noisy bearing is clamped to be within the beam???&lt;br&gt;&lt;br&gt;Distance error which is added to the actual distance:&lt;br&gt;$$ {rng} * (D_{noise} * E) $$&lt;br&gt;The resulting noisy distance is clamped between and min and max value&lt;br&gt;&lt;br&gt;rng is value between ??? and ???.&lt;br&gt;&lt;br&gt;$$ S_{{contact}_x} = d_{noisy} \cos{(\theta_{noisy})} $$&lt;br&gt;$$ S_{{contact}_y} = d_{noisy} \sin{(\theta_{noisy})} $$&lt;br&gt;&lt;br&gt;decompose contact position into distance and bearing.&lt;br&gt;&lt;br&gt;contact area is bearing +- range of noise and distance +- range of noise.&lt;br&gt;&lt;br&gt;$$ S_{{contact}_x} = d \cos{(\theta)} $$&lt;br&gt;$$ S_{{contact}_y} = d \sin{(\theta)} $$&lt;br&gt;&lt;br&gt;$$ S_{{contact}_x} =\frac{S_{{contact}_y}&amp;nbsp;\cos{(\theta)}}{\sin{(\theta)}}$$&lt;br&gt;&lt;br&gt;$$ \frac{S_{{contact}_x}} {S_{{contact}_y}} = \frac{\cos{(\theta)}}{\sin{(\theta)}}$$&lt;br&gt;&lt;br&gt;$$ \frac{S_{{contact}_x}} {S_{{contact}_y}} = \frac{1}{\tan {\theta}}$$&lt;br&gt;&lt;br&gt;$$ \theta = \tan^{-1}({ \frac{S_{{contact}_y}} {S_{{contact}_x}} })$$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="1280" width="360" height="1080" as="geometry"/>
+                </mxCell>
+                <mxCell id="5" value="Radar heading is the centre of the beam.&lt;br&gt;i.e if the radar is pointed at 0, the centre of the beam will point at 0 degrees" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="960" y="-80" width="480" height="40" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

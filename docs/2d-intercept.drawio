@@ -1,0 +1,284 @@
+<mxfile host="65bd71144e">
+    <diagram name="Page-1" id="2fULDWVxF2ej33EDJn02">
+        <mxGraphModel dx="3270" dy="646" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="1" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-5" value="" style="endArrow=classic;html=1;rounded=0;" parent="1" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="400" y="400" as="sourcePoint"/>
+                        <mxPoint x="600" y="280" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-6" value="" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;" parent="1" vertex="1">
+                    <mxGeometry x="390" y="390" width="20" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-8" value="" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;" parent="1" vertex="1">
+                    <mxGeometry x="550" y="470" width="20" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-10" value="" style="endArrow=none;dashed=1;html=1;rounded=0;" parent="1" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="560" y="480" as="sourcePoint"/>
+                        <mxPoint x="400" y="400" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-11" value="" style="endArrow=classic;html=1;rounded=0;" parent="1" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="560" y="480" as="sourcePoint"/>
+                        <mxPoint x="600" y="280" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-14" value="$$V_b$$" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="560" y="390" width="60" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-15" value="$$P_e$$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="460" y="440" width="40" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-16" value="$$P_i$$" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="580" y="260" width="60" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-17" value="" style="verticalLabelPosition=bottom;verticalAlign=top;html=1;shape=mxgraph.basic.arc;startAngle=0.7658627587152768;endAngle=0.059182732271746585;" parent="1" vertex="1">
+                    <mxGeometry x="530" y="440" width="55" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-18" value="$$\theta$$" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="530" y="450" width="40" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-19" value="$$V_e=U_e+A_et$$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="400" y="310" width="120" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-20" value="$$U_e=V_e$$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="400" y="280" width="80" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-21" value="$$t=0$$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="490" y="280" width="40" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-22" value="at" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="460" y="280" width="40" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-23" value="$$V_b$$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="640" y="360" width="40" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-24" value="is constant but dependant on theta which is unknown" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="660" y="360" width="180" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-25" value="$$P_i=V_bt$$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="640" y="160" width="120" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-26" value="$$P_b=[0, 0]$$" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="570" y="490" width="60" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-29" value="$$P_i=P_e+U_et+A_et^2$$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="640" y="200" width="160" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-30" value="$$V_bt=P_e+U_et+A_et^2$$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="640" y="240" width="160" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-31" value="$$s_b$$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="640" y="410" width="40" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-32" value="is the speed of the bullet" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="660" y="400" width="180" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-33" value="$$V_b \cdot P_e=d_es_b\cos{\theta}$$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="680" y="450" width="240" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-34" value="$$d_e=|P_e|$$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="400" y="480" width="60" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-35" value="$$|V_e|^2t^2=d_e^2+s_b^2t^2-2d_es_bt \cos{\theta}$$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="680" y="490" width="240" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-37" value="$$\alpha$$" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="410" y="385" width="40" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-39" value="" style="verticalLabelPosition=bottom;verticalAlign=top;html=1;shape=mxgraph.basic.arc;startAngle=0.7658627587152768;endAngle=0.003700610705193441;rotation=120;" parent="1" vertex="1">
+                    <mxGeometry x="390" y="380" width="55" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-41" value="$$V_e \cdot -P_e=s_ed_e\cos{\alpha}$$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="80" y="320" width="240" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-42" value="$$s_b^2t^2=s_e^2t^2+d_e^2-2s_etd_e \cos{\alpha}$$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="80" y="360" width="240" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-44" value="$$V_b=\frac{P_e}{d_e}R(\theta)s_b$$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="680" y="560" width="240" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-49" value="$$s_b^2t^2=s_e^2t^2+d_e^2+2(V_e \cdot P_e)$$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;movable=1;resizable=1;rotatable=1;deletable=1;editable=1;locked=0;connectable=1;" parent="1" vertex="1">
+                    <mxGeometry x="80" y="400" width="240" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-50" value="$$s_e=|U_e|+|A_e|t$$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="-120" y="400" width="120" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-51" value="Assume:" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="-120" y="370" width="60" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-52" value="" style="endArrow=none;html=1;rounded=0;" parent="1" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="-120" y="440" as="sourcePoint"/>
+                        <mxPoint x="360" y="440" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-53" value="" style="endArrow=none;html=1;rounded=0;" parent="1" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="360" y="760" as="sourcePoint"/>
+                        <mxPoint x="360" y="440" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-54" value="$$s_b^2t^2=(t^2a_e+a_eu_et+u_e^2)t^2+d_e^2+2(U_e \cdot P_e)+2t(A_e \cdot P_e)$$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="-120" y="480" width="480" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-57" value="$$s_b^2t^2=t^4a_e+a_eu_et^3+u_e^2t^2+d_e^2+2(U_e \cdot P_e)+2t(A_e \cdot P_e)$$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="-120" y="520" width="480" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-58" value="$$t^4a_e+a_eu_et^3+u_e^2t^2-s_b^2t^2+d_e^2+2(U_e \cdot P_e)+2t(A_e \cdot P_e)=0$$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="-120" y="560" width="480" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-59" value="$$t^4a_e+t^3a_eu_e+t^2(u_e^2-s_b^2)+t2(A_e \cdot P_e)+2(U_e \cdot P_e)+d_e^2=0$$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="-120" y="600" width="480" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-61" value="$$a_e=|A_e|$$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="-240" y="480" width="120" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-62" value="$$u_e=|U_e|$$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="-240" y="440" width="120" height="40" as="geometry"/>
+                </mxCell>
+                <UserObject label="https://en.wikipedia.org/wiki/Quartic_function" link="https://en.wikipedia.org/wiki/Quartic_function" id="KgFONSEE_gC35ZlVn0fw-63">
+                    <mxCell style="text;whiteSpace=wrap;" parent="1" vertex="1">
+                        <mxGeometry x="-120" y="680" width="270" height="30" as="geometry"/>
+                    </mxCell>
+                </UserObject>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-64" value="$$a=a_e$$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="-120" y="720" width="120" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-65" value="$$b=a_eu_e$$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="-120" y="760" width="120" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-66" value="$$c=u_e^2 - s_b^2$$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="-120" y="800" width="120" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-67" value="$$d=2(A_e \cdot P_e)$$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="-40" y="720" width="160" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-68" value="$$e=2(U_e \cdot P_e) + d_e^2$$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="-40" y="760" width="160" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-69" value="$$p=\frac{{8 a_e u_e^2} - {8 a_e&amp;nbsp;s_b^2} - {3 a_e^2 u_e^2}}{8a_e^2}$$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="720" width="400" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-70" value="" style="endArrow=none;html=1;rounded=0;" parent="1" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="-120" y="680" as="sourcePoint"/>
+                        <mxPoint x="360" y="680" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-72" value="$$p=\frac{{8 (u_e^2 - s_b^2)} - {3 a_e u_e^2}}{8a_e}$$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="760" width="400" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-75" value="$$q=\frac{{a_e^3 u_e^3}-{a_e^2 u_e (u_e^2-s_b^2)}+{16a_e^2(A_e \cdot P_e)}}{8 a_e^3}$$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="840" width="400" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-76" value="$$q=\frac{{a_e u_e^3}-{u_e (u_e^2-s_b^2)}+{16(A_e \cdot P_e)}}{8 a_e}$$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="880" width="400" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-77" value="$$q=\frac{u_e^3(a_e - 1) + {u_e s_b^2}+{16(A_e \cdot P_e)}}{8 a_e}$$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="920" width="400" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="KgFONSEE_gC35ZlVn0fw-81" value="$$P_e+t(U_e-V_b)+A_et^2=0$$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="800" y="200" width="200" height="40" as="geometry"/>
+                </mxCell>
+                <UserObject label="https://math.stackexchange.com/questions/1814175/predicting-accelerating-object-collisions-in-a-friction-less-environment/1819310#1819310" link="https://math.stackexchange.com/questions/1814175/predicting-accelerating-object-collisions-in-a-friction-less-environment/1819310#1819310" id="KgFONSEE_gC35ZlVn0fw-82">
+                    <mxCell style="text;whiteSpace=wrap;" parent="1" vertex="1">
+                        <mxGeometry x="720" y="120" width="560" height="50" as="geometry"/>
+                    </mxCell>
+                </UserObject>
+                <mxCell id="fE_XJ-B_OS_nDIOPtq_C-5" value="should be a t here?" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="280" y="385" width="60" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="fE_XJ-B_OS_nDIOPtq_C-6" value="" style="endArrow=classic;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" parent="1" source="fE_XJ-B_OS_nDIOPtq_C-5" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="30" y="510" as="sourcePoint"/>
+                        <mxPoint x="200" y="410" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="fE_XJ-B_OS_nDIOPtq_C-26" value="Wrong" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="-200" y="320" width="60" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="fE_XJ-B_OS_nDIOPtq_C-27" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.674;exitY=1.09;exitDx=0;exitDy=0;exitPerimeter=0;entryX=-0.02;entryY=0.118;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="fE_XJ-B_OS_nDIOPtq_C-26" target="KgFONSEE_gC35ZlVn0fw-50" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="-80" y="490" as="sourcePoint"/>
+                        <mxPoint x="-30" y="440" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="IjBQlVO94lLWBJ59dkaV-1" value="$$s_e=|U_e+A_et|$$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="-640" y="280" width="120" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="IjBQlVO94lLWBJ59dkaV-2" value="$$s_e^2=(U_{ex} + A_{ex}t)^2 +(U_{ey} + A_{ey}t)^2$$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="-640" y="320" width="360" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="IjBQlVO94lLWBJ59dkaV-7" value="$$ V_bt = P_e + V_et + \frac{1}{2}A_et^2 $$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="-760" y="400" width="360" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="IjBQlVO94lLWBJ59dkaV-8" value="square both sides" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="-880" y="440" width="80" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="IjBQlVO94lLWBJ59dkaV-9" value="$$ |V_b|^2t^2 = {t^40.25|A_e|^2} + {t^3A_e \cdot V_e} + {t^2A_e \cdot P_e} + {t^2|V_e|^2} + {2tV_e \cdot P_e} + {|P_e|^2}&amp;nbsp; $$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="-760" y="440" width="440" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="IjBQlVO94lLWBJ59dkaV-10" value="$$ V \cdot V = |V|^2 $$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="-760" y="280" width="160" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="IjBQlVO94lLWBJ59dkaV-11" value="$$ {t^40.25|A_e|^2} + {t^3(A_e \cdot V_e)} + {t^2({A_e \cdot P_e} + {|V_e|^2} -|V_b|^2)} + {t(2V_e \cdot P_e)} + {|P_e|^2} = 0 $$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="-760" y="475" width="480" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="IjBQlVO94lLWBJ59dkaV-12" value="$$a=0.25|A_e|^2$$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="-760" y="560" width="120" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="IjBQlVO94lLWBJ59dkaV-13" value="$$b=A_e \cdot V_e$$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="-760" y="600" width="120" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="IjBQlVO94lLWBJ59dkaV-14" value="$$c = {A_e \cdot P_e} + {|V_e|^2} - {|V_b|^2}$$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="-760" y="640" width="250" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="IjBQlVO94lLWBJ59dkaV-15" value="$$d=2V_e \cdot P_e$$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="-600" y="560" width="160" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="IjBQlVO94lLWBJ59dkaV-16" value="$$e=|P_e|^2$$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="-600" y="600" width="160" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="IjBQlVO94lLWBJ59dkaV-17" value="" style="endArrow=none;html=1;rounded=0;" parent="1" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="-280.57000000000005" y="720" as="sourcePoint"/>
+                        <mxPoint x="-280" y="240" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="3" value="&lt;u&gt;Working solution&lt;/u&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="-760" y="200" width="160" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="4" value="$$ V_bt + \frac{1}{2}A_bt^2 = P_e + V_et + \frac{1}{2}A_et^2 $$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="-1360" y="400" width="240" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="5" value="$$ |V_b|^2t^2 + V_bA_bt^3 + \frac{1}{4}|A_b|^2t^4 = {t^40.25|A_e|^2} + {t^3A_eV_e} + {t^2A_eP_e} + {t^2|V_e|^2} + {2tV_eP_e} + {|P_e|^2}&amp;nbsp; $$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="-1480" y="480" width="440" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="6" value="$$ {t^4\frac{1}{4}(|A_e|^2 - |A_b|^2)} + {t^3(A_eV_e - V_bA_b)} + {t^2({A_e \cdot P_e} + {|V_e|^2} -|V_b|^2)} + {t(2V_e \cdot P_e)} + {|P_e|^2} = 0 $$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="-1480" y="520" width="480" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="7" value="$$a=\frac{1}{4}(|A_e|^2 - |A_b|^2)$$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="-1480" y="600" width="120" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="8" value="$$b=A_eV_e - V_bA_b$$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="-1480" y="640" width="120" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="9" value="$$c = {A_e \cdot P_e} + {|V_e|^2} - {|V_b|^2}$$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="-1480" y="680" width="250" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="10" value="$$d=2V_e \cdot P_e$$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="-1320" y="600" width="160" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="11" value="$$e=|P_e|^2$$" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="-1320" y="640" width="160" height="40" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

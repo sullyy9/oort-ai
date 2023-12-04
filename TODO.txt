@@ -1,0 +1,25 @@
+----------------
+
+Clamp the contact area between radar limits.
+Area is an Ellipse bounded by the annulus sector of the radar.
+Maybe a composite shape type that takes multiple shapes and 'masks' them together.
+
+----------------
+
+Work in some actual error handling.
+Would be useful to have an error handler at the top level that prints the last 5 or so unhandled
+errors.
+
+----------------
+
+Look at rust gui architecture for ideas on how to add common behaviour between ship classes / roles.
+
+----------------
+
+Create more concrete types around Vec2 and f64 to differentiate beteen point/vector, angle/distance,
+etc. (maybe even relative/absolute).
+
+struct AbsolutePoint(Point)
+struct RelativePoint{point: Point, reference: Point} <- could reference be a const generic?
+
+----------------
