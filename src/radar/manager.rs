@@ -48,7 +48,7 @@ impl RadarManager {
     pub fn scan<T: Position>(&mut self, emitter: &T) {
         match self.job_rotation.get(self.job_index) {
             Some(RadarJob::Search) => {
-                if let Some(contact) = self.search.scan(emitter).map(Contact::Scanned) {
+                if let Some(contact) = self.search.scan(emitter).map(Contact::Search) {
                     // self.contacts.add_or_update_contact(&contact);
                     self.contacts.add(contact);
                 }
@@ -80,7 +80,7 @@ impl RadarManager {
 
             Some(RadarJob::Track(id)) => match self.contacts.get(*id) {
                 Some(Contact::Tracked(contact)) => self.track.adjust(contact, emitter),
-                Some(Contact::Scanned(contact)) => {
+                Some(Contact::Search(contact)) => {
                     self.track.adjust(&TrackedContact::from(contact), emitter)
                 }
                 None => debug!("!!! => contact not found"),
@@ -108,7 +108,7 @@ impl RadarManager {
         for id in to_untrack {
             let old_contact = self.contacts.take(id);
             if let Some(Contact::Tracked(contact)) = old_contact {
-                let contact = Contact::Scanned(SearchContact::from(contact));
+                let contact = Contact::Search(SearchContact::from(contact));
                 self.contacts.insert(id, contact);
             } else if old_contact.is_some() {
                 panic!("Expected to get a tracked contact but got {old_contact:?}");

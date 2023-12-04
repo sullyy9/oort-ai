@@ -35,7 +35,7 @@ impl TrackingRadar {
     ///
     pub fn scan<T: Position>(&mut self, target: Contact, emitter: &T) -> Option<TrackedContact> {
         let mut target = match target {
-            Contact::Scanned(contact) => TrackedContact::from(contact),
+            Contact::Search(contact) => TrackedContact::from(contact),
             Contact::Tracked(contact) => contact,
         };
 

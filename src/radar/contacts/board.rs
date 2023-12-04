@@ -32,7 +32,7 @@ impl ContactBoard {
     ///
     pub fn add(&mut self, contact: Contact) {
         match contact {
-            Contact::Scanned(contact) => self.add_search_contact(Contact::Scanned(contact)),
+            Contact::Search(contact) => self.add_search_contact(Contact::Search(contact)),
             Contact::Tracked(contact) => self.add_tracked_contact(Contact::Tracked(contact)),
         }
     }
@@ -119,7 +119,7 @@ impl ContactBoard {
 
         // Don't filter tracked contacts if this is a search contact as the tracked contact will be
         // more accurate.
-        let matches = matches.filter(|(_, c)| matches!(c, Contact::Scanned(_)));
+        let matches = matches.filter(|(_, c)| matches!(c, Contact::Search(_)));
 
         let match_ids: Vec<usize> = matches.map(|(id, _)| *id).collect();
 
@@ -149,7 +149,7 @@ impl ContactBoard {
     }
 
     pub fn track(&mut self, id: usize) {
-        if let Some(Contact::Scanned(contact)) = self.contacts.get(&id) {
+        if let Some(Contact::Search(contact)) = self.contacts.get(&id) {
             self.contacts
                 .insert(id, Contact::Tracked(TrackedContact::from(contact)));
         }
@@ -174,7 +174,7 @@ impl ContactBoard {
     pub fn draw_contacts(&self) {
         for (_, contact) in self.contacts.iter() {
             let colour = match contact {
-                Contact::Scanned(_) => Colour::Red,
+                Contact::Search(_) => Colour::Red,
                 Contact::Tracked(_) => Colour::Green,
             };
 

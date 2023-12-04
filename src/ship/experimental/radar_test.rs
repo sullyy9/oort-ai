@@ -111,7 +111,7 @@ impl RadarTester {
                 .radar
                 .contacts
                 .iter()
-                .filter(|(_, c)| matches!(c, Contact::Scanned(_)));
+                .filter(|(_, c)| matches!(c, Contact::Search(_)));
 
             let missiles = other_contacts.filter(|(_, c)| c.is_class(Class::Missile));
 

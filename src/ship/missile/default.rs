@@ -134,7 +134,7 @@ impl ShipClassLoop for DefaultMissile {
                 .radar
                 .contacts
                 .iter()
-                .filter(|(_, c)| matches!(c, Contact::Scanned(_)))
+                .filter(|(_, c)| matches!(c, Contact::Search(_)))
                 .min_by(|(_, c1), (_, c2)| {
                     c1.distance_to(self)
                         .partial_cmp(&c2.distance_to(self))
