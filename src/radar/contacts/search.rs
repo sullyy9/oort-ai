@@ -8,29 +8,32 @@ use super::{
         kinematics::{Position, Velocity},
     },
     ship::stats::MaxAcceleration,
+    TrackedContact,
 };
 
 ////////////////////////////////////////////////////////////////
 
 #[derive(Clone, PartialEq, Debug)]
 pub struct SearchContact {
-    pub time: f64,
-    pub emitter: Emitter,
+    pub(super) time: f64,
+    pub(super) emitter: Emitter,
 
-    pub class: Class,
-    pub position: Vec2,
-    pub velocity: Vec2,
-    pub rssi: f64,
-    pub snr: f64,
+    pub(super) class: Class,
+    pub(super) position: Vec2,
+    pub(super) velocity: Vec2,
+    pub(super) rssi: f64,
+    pub(super) snr: f64,
 
-    pub error: RadarContactError,
+    pub(super) error: RadarContactError,
 }
 
+////////////////////////////////////////////////////////////////
+/// construction / conversion
 ////////////////////////////////////////////////////////////////
 
 impl SearchContact {
     pub fn new(time: f64, emitter: &Emitter, scan: &ScanResult) -> Self {
-        Self {
+        return Self {
             time,
             emitter: emitter.clone(),
 
@@ -41,7 +44,24 @@ impl SearchContact {
             snr: scan.snr,
 
             error: RadarContactError::from(scan),
-        }
+        };
+    }
+}
+
+impl From<TrackedContact> for SearchContact {
+    fn from(mut contact: TrackedContact) -> Self {
+        // Should be safe as TrackedContact is always constructed with at least one element in each
+        // field.
+        return Self {
+            time: contact.time(),
+            emitter: contact.emitter.pop_back().unwrap(),
+            class: contact.class(),
+            position: contact.position(),
+            velocity: contact.velocity(),
+            rssi: contact.rssi(),
+            snr: contact.snr(),
+            error: contact.error.pop_back().unwrap(),
+        };
     }
 }
 
@@ -62,14 +82,82 @@ impl Velocity for SearchContact {
 }
 
 ////////////////////////////////////////////////////////////////
+/// field access
+////////////////////////////////////////////////////////////////
 
+#[allow(dead_code)]
 impl SearchContact {
+    /// Description
+    /// -----------
+    /// Return information about the radar emitter used to scan the contact.
+    ///
+    pub fn emitter(&self) -> &Emitter {
+        return &self.emitter;
+    }
+
+    /// Description
+    /// -----------
+    /// Return the time at which the contact was last updated.
+    ///
+    /// Returns
+    /// -------
+    /// Time in seconds.
+    ///
+    pub fn time(&self) -> f64 {
+        return self.time;
+    }
+
+    /// Description
+    /// -----------
+    /// Return the time elapsed since the last update. The current time is aquired from oort_api's
+    /// current_time() function.
+    ///
+    /// Returns
+    /// -------
+    /// Time elapsed in seconds.
+    ///
     pub fn time_elapsed(&self) -> f64 {
         return current_time() - self.time;
     }
 
-    pub fn is_same_class(&self, other: &Self) -> bool {
-        return self.class == other.class;
+    /// Description
+    /// -----------
+    /// Return the ship class of the contact.
+    ///
+    pub fn class(&self) -> Class {
+        return self.class;
+    }
+
+    /// Description
+    /// -----------
+    /// Return the received signal strength of the contact.
+    ///
+    /// Returns
+    /// -------
+    /// RSSI in dB.
+    ///
+    pub fn rssi(&self) -> f64 {
+        return self.rssi;
+    }
+
+    /// Description
+    /// -----------
+    /// Return the signal to noise ratio of the contact.
+    ///
+    /// Returns
+    /// -------
+    /// SNR in dB.
+    ///
+    pub fn snr(&self) -> f64 {
+        return self.snr;
+    }
+
+    /// Description
+    /// -----------
+    /// Return the range of possible error in the contact.
+    ///
+    pub fn error(&self) -> &RadarContactError {
+        return &self.error;
     }
 }
 

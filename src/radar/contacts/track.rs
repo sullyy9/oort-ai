@@ -17,30 +17,39 @@ use super::{
 
 #[derive(Clone, PartialEq, Debug)]
 pub struct TrackedContact {
-    emitter: VecDeque<Emitter>,
-    timestamp: VecDeque<f64>,
+    pub(super) emitter: VecDeque<Emitter>,
+    pub(super) time: VecDeque<f64>,
 
-    pub class: Class,
-    position: VecDeque<Vec2>,
-    velocity: VecDeque<Vec2>,
-    rssi: VecDeque<f64>,
-    snr: VecDeque<f64>,
+    pub(super) class: Class,
+    pub(super) position: VecDeque<Vec2>,
+    pub(super) velocity: VecDeque<Vec2>,
+    pub(super) rssi: VecDeque<f64>,
+    pub(super) snr: VecDeque<f64>,
 
-    error: VecDeque<RadarContactError>,
-    acceleration: Vec2,
+    pub(super) error: VecDeque<RadarContactError>,
+    pub(super) acceleration: Vec2,
 }
 
+////////////////////////////////////////////////////////////////
+/// constants
 ////////////////////////////////////////////////////////////////
 
 impl TrackedContact {
     const MAX_DATA_POINTS: usize = 9;
+}
 
+////////////////////////////////////////////////////////////////
+/// construction / conversion
+////////////////////////////////////////////////////////////////
+
+#[allow(dead_code)]
+impl TrackedContact {
     pub fn new(scan: &ScanResult, scan_emitter: &Emitter) -> Self {
         let mut emitter = VecDeque::with_capacity(Self::MAX_DATA_POINTS);
         emitter.push_back(scan_emitter.clone());
 
-        let mut timestamp = VecDeque::with_capacity(Self::MAX_DATA_POINTS);
-        timestamp.push_back(current_time());
+        let mut time = VecDeque::with_capacity(Self::MAX_DATA_POINTS);
+        time.push_back(current_time());
 
         let mut position = VecDeque::with_capacity(Self::MAX_DATA_POINTS);
         position.push_back(scan.position);
@@ -59,7 +68,7 @@ impl TrackedContact {
 
         return Self {
             emitter,
-            timestamp,
+            time,
 
             class: scan.class,
             position,
@@ -80,8 +89,8 @@ impl From<SearchContact> for TrackedContact {
         let mut emitter = VecDeque::with_capacity(Self::MAX_DATA_POINTS);
         emitter.push_back(contact.emitter);
 
-        let mut timestamp = VecDeque::with_capacity(Self::MAX_DATA_POINTS);
-        timestamp.push_back(contact.time);
+        let mut time = VecDeque::with_capacity(Self::MAX_DATA_POINTS);
+        time.push_back(contact.time);
 
         let mut position = VecDeque::with_capacity(Self::MAX_DATA_POINTS);
         position.push_back(contact.position);
@@ -100,7 +109,7 @@ impl From<SearchContact> for TrackedContact {
 
         return Self {
             emitter,
-            timestamp,
+            time,
 
             class: contact.class,
             position,
@@ -119,8 +128,8 @@ impl From<&SearchContact> for TrackedContact {
         let mut emitter = VecDeque::with_capacity(Self::MAX_DATA_POINTS);
         emitter.push_back(contact.emitter.clone());
 
-        let mut timestamp = VecDeque::with_capacity(Self::MAX_DATA_POINTS);
-        timestamp.push_back(contact.time);
+        let mut time = VecDeque::with_capacity(Self::MAX_DATA_POINTS);
+        time.push_back(contact.time);
 
         let mut position = VecDeque::with_capacity(Self::MAX_DATA_POINTS);
         position.push_back(contact.position);
@@ -139,7 +148,7 @@ impl From<&SearchContact> for TrackedContact {
 
         return Self {
             emitter,
-            timestamp,
+            time,
 
             class: contact.class,
             position,
@@ -186,10 +195,10 @@ impl TrackedContact {
         }
         self.emitter.push_back(emitter.clone());
 
-        if self.timestamp.len() == Self::MAX_DATA_POINTS {
-            self.timestamp.pop_front();
+        if self.time.len() == Self::MAX_DATA_POINTS {
+            self.time.pop_front();
         }
-        self.timestamp.push_back(current_time());
+        self.time.push_back(current_time());
 
         if self.position.len() == Self::MAX_DATA_POINTS {
             self.position.pop_front();
@@ -219,7 +228,7 @@ impl TrackedContact {
         // Find the average change in velocity to estimate the acceleration.
         let mut sum = vec2(0.0, 0.0);
 
-        let records = std::iter::zip(self.velocity.iter(), self.timestamp.iter());
+        let records = std::iter::zip(self.velocity.iter(), self.time.iter());
         for (r1, r2) in std::iter::zip(records.clone(), records.skip(1)) {
             let vdelta = r1.0 - r2.0;
             let tdelta = r1.1 - r2.1;
@@ -232,14 +241,87 @@ impl TrackedContact {
 }
 
 ////////////////////////////////////////////////////////////////
+/// field access
+////////////////////////////////////////////////////////////////
 
+#[allow(dead_code)]
 impl TrackedContact {
-    pub fn time_elapsed(&self) -> f64 {
-        return current_time() - self.timestamp.back().unwrap();
+    /// Description
+    /// -----------
+    /// Return information about the radar emitter used to scan the contact.
+    ///
+    pub fn emitter(&self) -> &Emitter {
+        // Should be safe as type is always constructed with at least one entry in this field.
+        return self.emitter.back().unwrap();
     }
 
-    pub fn is_same_class(&self, other: &Self) -> bool {
-        return self.class == other.class;
+    /// Description
+    /// -----------
+    /// Return the time at which the contact was last updated.
+    ///
+    /// Returns
+    /// -------
+    /// Time in seconds.
+    ///
+    pub fn time(&self) -> f64 {
+        // Should be safe as type is always constructed with at least one entry in this field.
+        return *self.time.back().unwrap();
+    }
+
+    /// Description
+    /// -----------
+    /// Return the time elapsed since the last update. The current time is aquired from oort_api's
+    /// current_time() function.
+    ///
+    /// Returns
+    /// -------
+    /// Time elapsed in seconds.
+    ///
+    pub fn time_elapsed(&self) -> f64 {
+        return current_time() - self.time.back().unwrap();
+    }
+
+    /// Description
+    /// -----------
+    /// Return the ship class of the contact.
+    ///
+    pub fn class(&self) -> Class {
+        return self.class;
+    }
+
+    /// Description
+    /// -----------
+    /// Return the received signal strength of the contact.
+    ///
+    /// Returns
+    /// -------
+    /// RSSI in dB.
+    ///
+    pub fn rssi(&self) -> f64 {
+        // Should be safe as type is always constructed with at least one entry in this field.
+        return *self.rssi.back().unwrap();
+    }
+
+    /// Description
+    /// -----------
+    /// Return the signal to noise ratio of the contact.
+    ///
+    /// Returns
+    /// -------
+    /// SNR in dB.
+    ///
+    pub fn snr(&self) -> f64 {
+        // Should be safe as type is always constructed with at least one entry in this field.
+        return *self.snr.back().unwrap();
+    }
+
+    /// Description
+    /// -----------
+    /// Return the range of possible error in the contact.
+    ///
+    pub fn error(&self) -> &RadarContactError {
+        // Should be safe as type is always constructed with at least one entry in this field.
+        return self.error.back().unwrap();
     }
 }
 
@@ -273,39 +355,6 @@ impl TrackedContact {
         );
 
         return area;
-
-        // // Translate the initial area by velocity.
-        // let [p1, p2, p3, p4] = self
-        //     .get_initial_area()
-        //     .get_verticies()
-        //     .map(|v| v + (*self.velocity.back().unwrap() * time));
-
-        // // Expand the boundry of the area by the velocity error and potential acceleration.
-        // let max_accel = MaxAcceleration::from(self.class);
-        // let radius = self.error.back().unwrap().velocity * time
-        //     + (0.5 * max_accel.magnitude() * time.powf(2.0));
-        // let radius_vec = vec2(radius, 0.0);
-
-        // let mut verticies: [Vec2; 20] = Default::default();
-
-        // for (i, points) in [&p4, &p1, &p2, &p3, &p4, &p1].windows(3).enumerate() {
-        //     let (last, this, next) = (points[0], points[1], points[2]);
-
-        //     let px1 = this + radius_vec.rotate(this.bearing_to(last) + (PI / 2.0));
-        //     let px5 = this + radius_vec.rotate(next.bearing_to(this) + (PI / 2.0));
-        //     let px3 = this + radius_vec.rotate(px5.bearing_to(&px1) + (PI / 2.0));
-        //     let px2 = this + radius_vec.rotate(px3.bearing_to(&px1) + (PI / 2.0));
-        //     let px4 = this + radius_vec.rotate(px5.bearing_to(&px3) + (PI / 2.0));
-
-        //     let i = i * 5;
-        //     verticies[i] = px1;
-        //     verticies[i + 1] = px2;
-        //     verticies[i + 2] = px3;
-        //     verticies[i + 3] = px4;
-        //     verticies[i + 4] = px5;
-        // }
-
-        // return Polygon::from(verticies);
     }
 
     /// Description
@@ -321,31 +370,10 @@ impl TrackedContact {
         let bearing = self.bearing_to(&emitter.position);
         let distance = self.distance_to(&emitter.position);
 
-        let error = self.error.back().unwrap();
-        let max_distance = distance + error.distance;
-        let min_distance = distance - error.distance;
-        let max_bearing = bearing + error.bearing;
-        let min_bearing = bearing - error.bearing;
-
-        // Clamp distance and bearing.
-        let max_distance = max_distance.clamp(emitter.min_distance, emitter.max_distance);
-        let min_distance = min_distance.clamp(emitter.min_distance, emitter.max_distance);
-
-        let max_bearing = max_bearing.clamp(emitter.get_min_heading(), emitter.get_max_heading());
-        let min_bearing = min_bearing.clamp(emitter.get_min_heading(), emitter.get_max_heading());
-
         let width = f64::atan(self.error.back().unwrap().bearing) * distance * 2.0;
         let height = self.error.back().unwrap().distance * 2.0;
 
         return Ellipse::new(self.position.back().unwrap(), bearing, width, height);
-
-        // Create the polygon.
-        // return Polygon::from([
-        //     emitter.position + vec2(min_distance, 0.0).rotate(min_bearing),
-        //     emitter.position + vec2(min_distance, 0.0).rotate(max_bearing),
-        //     emitter.position + vec2(max_distance, 0.0).rotate(max_bearing),
-        //     emitter.position + vec2(max_distance, 0.0).rotate(min_bearing),
-        // ]);
     }
 }
 

@@ -39,14 +39,14 @@ impl Contact {
     pub fn is_class(&self, class: Class) -> bool {
         return match self {
             Self::Scanned(contact) => contact.class == class,
-            Self::Tracked(contact) => contact.class == class,
+            Self::Tracked(contact) => contact.class() == class,
         };
     }
 
     pub fn get_class(&self) -> Class {
         return match self {
             Self::Scanned(contact) => contact.class,
-            Self::Tracked(contact) => contact.class,
+            Self::Tracked(contact) => contact.class(),
         };
     }
 

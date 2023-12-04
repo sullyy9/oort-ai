@@ -12,7 +12,8 @@ errors.
 
 ----------------
 
-Look at rust gui architecture for ideas on how to add common behaviour between ship classes / roles.
+Look at rust gui / event loop architecture for ideas on how to add common behaviour between ship
+classes / roles.
 
 ----------------
 
@@ -21,5 +22,9 @@ etc. (maybe even relative/absolute).
 
 struct AbsolutePoint(Point)
 struct RelativePoint{point: Point, reference: Point} <- could reference be a const generic?
+
+----------------
+
+Integrate a Kalman filter to increase accuracy of radar contacts.
 
 ----------------
