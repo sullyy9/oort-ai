@@ -36,16 +36,9 @@ impl Contact {
         };
     }
 
-    pub fn is_class(&self, class: Class) -> bool {
+    pub fn class(&self) -> Class {
         return match self {
-            Self::Search(contact) => contact.class == class,
-            Self::Tracked(contact) => contact.class() == class,
-        };
-    }
-
-    pub fn get_class(&self) -> Class {
-        return match self {
-            Self::Search(contact) => contact.class,
+            Self::Search(contact) => contact.class(),
             Self::Tracked(contact) => contact.class(),
         };
     }

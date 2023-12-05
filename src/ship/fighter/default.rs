@@ -148,7 +148,7 @@ impl ShipClassLoop for DefaultFighter {
                 .iter()
                 .filter(|(_, c)| matches!(c, Contact::Search(_)));
 
-            let missiles = other_contacts.filter(|(_, c)| c.is_class(Class::Missile));
+            let missiles = other_contacts.filter(|(_, c)| c.class() == Class::Missile);
 
             let priority = missiles.min_by_key(|(_, c)| c.distance_to(self) as u32);
             let priority = priority.filter(|(&id, _)| id != target_id);

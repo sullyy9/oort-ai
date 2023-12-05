@@ -46,7 +46,7 @@ impl ContactBoard {
         let contact_area = contact.get_area_after(contact.time_elapsed());
 
         let matches = self.iter();
-        let matches = matches.filter(|(_, c)| c.is_class(contact.get_class()));
+        let matches = matches.filter(|(_, c)| c.class() == contact.class());
         let matches = matches.map(|(id, c)| (id, c, c.get_area_after(c.time_elapsed())));
         let matches =
             matches.filter(|(_, c, area)| area.contains(&contact) || contact_area.contains(*c));
@@ -78,7 +78,7 @@ impl ContactBoard {
     fn add_tracked_contact(&mut self, contact: Contact) {
         // Find any contacts matching class and position.
         let matches = self.iter();
-        let matches = matches.filter(|(_, c)| c.is_class(contact.get_class()));
+        let matches = matches.filter(|(_, c)| c.class() == contact.class());
         let matches = matches.map(|(id, c)| (id, c, c.get_area_after(c.time_elapsed())));
         let matches = matches.filter(|(_, _, area)| area.contains(&contact));
 
@@ -112,7 +112,7 @@ impl ContactBoard {
         let matching_class = self
             .contacts
             .iter()
-            .filter(|(_, c)| c.is_class(contact.get_class()));
+            .filter(|(_, c)| c.class() == contact.class());
 
         let matches =
             matching_class.filter(|(_, c)| c.get_area_after(c.time_elapsed()).contains(contact));
@@ -133,7 +133,7 @@ impl ContactBoard {
         let matching_class = self
             .contacts
             .iter()
-            .filter(|(_, c)| c.is_class(contact.get_class()));
+            .filter(|(_, c)| c.class() == contact.class());
 
         for (&i, old) in matching_class {
             if old.get_area_after(old.time_elapsed()).contains(contact) {
