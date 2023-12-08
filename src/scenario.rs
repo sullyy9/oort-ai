@@ -4,7 +4,7 @@ use oort_api::prelude::scenario_name;
 
 pub enum Scenario {
     Sandbox,
-    FighterDual,
+    FighterDuel,
 
     Unknown,
 }
@@ -19,7 +19,7 @@ impl Scenario {
     pub fn current() -> Self {
         match scenario_name() {
             "sandbox" => Self::Sandbox,
-            "fighter_dual" => Self::FighterDual,
+            "fighter_duel" => Self::FighterDuel,
             _ => Self::Unknown,
         }
     }

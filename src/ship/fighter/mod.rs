@@ -4,10 +4,10 @@
 //!
 
 mod default;
-mod dualist;
+mod duelist;
 
 // Imports.
 use super::{class, control, draw, math, radar, radio};
 
 // Exports.
-pub use self::{default::DefaultFighter, dualist::Dualist};
+pub use self::{default::DefaultFighter, duelist::Duelist};

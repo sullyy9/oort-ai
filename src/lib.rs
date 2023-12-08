@@ -14,7 +14,7 @@ use self::{
     scenario::Scenario,
     ship::{
         experimental::{ContactDrawer, RadarTester},
-        fighter::{DefaultFighter, Dualist},
+        fighter::{DefaultFighter, Duelist},
         missile::DefaultMissile,
         ShipClass,
     },
@@ -43,7 +43,7 @@ impl From<ShipClass> for Ship {
 ////////////////////////////////////////////////////////////////
 
 impl Ship {
-    const SANDBOX_MODE: &str = "radar_test";
+    const SANDBOX_MODE: &'static str = "radar_test";
 
     pub fn new() -> Ship {
         let scenario = Scenario::current();
@@ -60,7 +60,7 @@ impl Ship {
         use ShipClass::*;
         return match class() {
             Class::Fighter => match Scenario::current() {
-                Scenario::FighterDual => Self::from(Fighter(Box::new(Dualist::new()))),
+                Scenario::FighterDuel => Self::from(Fighter(Box::new(Duelist::new()))),
                 _ => Self::from(Fighter(Box::new(DefaultFighter::new()))),
             },
 

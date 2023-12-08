@@ -20,7 +20,7 @@ type Radar = RadarManager<UniqueContactBoard>;
 
 ////////////////////////////////////////////////////////////////
 
-pub struct Dualist {
+pub struct Duelist {
     radar: Radar,
     radio: Radio,
 
@@ -32,7 +32,7 @@ pub struct Dualist {
 
 ////////////////////////////////////////////////////////////////
 
-impl Position for Dualist {
+impl Position for Duelist {
     fn position(&self) -> Vec2 {
         return position();
     }
@@ -40,7 +40,7 @@ impl Position for Dualist {
 
 ////////////////////////////////////////////////////////////////
 
-impl Velocity for Dualist {
+impl Velocity for Duelist {
     fn velocity(&self) -> Vec2 {
         return velocity();
     }
@@ -48,7 +48,7 @@ impl Velocity for Dualist {
 
 ////////////////////////////////////////////////////////////////
 
-impl Acceleration for Dualist {
+impl Acceleration for Duelist {
     fn acceleration(&self) -> Vec2 {
         return self.acceleration;
     }
@@ -56,7 +56,7 @@ impl Acceleration for Dualist {
 
 ////////////////////////////////////////////////////////////////
 
-impl Heading for Dualist {
+impl Heading for Duelist {
     fn heading(&self) -> f64 {
         return heading();
     }
@@ -64,7 +64,7 @@ impl Heading for Dualist {
 
 ////////////////////////////////////////////////////////////////
 
-impl AngularVelocity for Dualist {
+impl AngularVelocity for Duelist {
     fn angular_velocity(&self) -> f64 {
         return angular_velocity();
     }
@@ -72,7 +72,7 @@ impl AngularVelocity for Dualist {
 
 ////////////////////////////////////////////////////////////////
 
-impl Translation for Dualist {
+impl Translation for Duelist {
     fn set_acceleration(&mut self, acceleration: Vec2) {
         accelerate(acceleration);
         self.acceleration = acceleration;
@@ -81,7 +81,7 @@ impl Translation for Dualist {
 
 ////////////////////////////////////////////////////////////////
 
-impl Rotation for Dualist {
+impl Rotation for Duelist {
     fn set_angular_acceleration(&mut self, acceleration: f64) {
         torque(acceleration)
     }
@@ -89,7 +89,7 @@ impl Rotation for Dualist {
 
 ////////////////////////////////////////////////////////////////
 
-impl Dualist {
+impl Duelist {
     const BULLET_SPEED: f64 = 1000.0; // m/s
 
     pub fn new() -> Self {
@@ -107,7 +107,7 @@ impl Dualist {
 
 ////////////////////////////////////////////////////////////////
 
-impl Dualist {
+impl Duelist {
     fn fire_guns(&self) {
         fire(0);
     }
@@ -129,7 +129,7 @@ impl Dualist {
 
 ////////////////////////////////////////////////////////////////
 
-impl ShipClassLoop for Dualist {
+impl ShipClassLoop for Duelist {
     fn tick(&mut self) {
         debug!("Role: Duelist");
 
@@ -248,7 +248,7 @@ impl ShipClassLoop for Dualist {
 
 ////////////////////////////////////////////////////////////////
 
-impl Dualist {
+impl Duelist {
     /// Description
     /// -----------
     /// Get the id and contact of an enemy fighter from the contact board.
