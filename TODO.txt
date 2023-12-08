@@ -28,3 +28,26 @@ struct RelativePoint{point: Point, reference: Point} <- could reference be a con
 Integrate a Kalman filter to increase accuracy of radar contacts.
 
 ----------------
+
+For navigation - maybe some kind of maneuver type consisting of nodes. Each node has time and action
+associated.
+
+----------------
+
+Look into event driven architecture.
+For higher level behaviour, we're mostly interested in reacting to events that ocurr over mutiple
+ticks. Would Async be a good fit here?
+
+Ship sub-modules i.e. radar, should notify the ship of events (e.g. new contact, search rotation
+complete, etc).
+
+Would an ECS help avoid issues with communiction between ships + submodules?
+At top level:
+
+struct ShipECS {
+    class: [Class],
+    behaviour: [Behaviour],
+    radar: [Radar],
+}
+
+----------------

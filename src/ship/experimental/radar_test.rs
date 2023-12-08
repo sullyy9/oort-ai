@@ -6,13 +6,19 @@ use super::{
     math::kinematics::{
         Acceleration, AngularVelocity, Heading, KinematicModel, Position, Velocity,
     },
-    radar::{contacts::Contact, RadarJob, RadarManager},
+    radar::{
+        board::{ContactBoard, UniqueContactBoard},
+        contacts::Contact,
+        RadarManager,
+    },
 };
+
+type Radar = RadarManager<UniqueContactBoard>;
 
 ////////////////////////////////////////////////////////////////
 
 pub struct RadarTester {
-    radar: RadarManager,
+    radar: Radar,
 
     acceleration: Vec2,
 
@@ -85,11 +91,8 @@ impl RadarTester {
         debug!("spawn fighter team 0 position (50, 0) heading 0");
         debug!("spawn missile team 1 position (3000, 3000) heading 0");
 
-        let mut radar = RadarManager::new();
-        radar.set_job_rotation(&[RadarJob::Search]);
-
         return Self {
-            radar,
+            radar: Radar::new(UniqueContactBoard::new()),
             acceleration: vec2(0.0, 0.0),
             target: None,
         };
@@ -122,15 +125,21 @@ impl RadarTester {
             if let Some((priority_id, _)) = priority {
                 self.target = Some(*priority_id);
 
-                let jobs = [RadarJob::Track(*priority_id), RadarJob::Search];
-                self.radar.contacts.track(*priority_id);
-                self.radar.set_job_rotation(&jobs);
+                if let Err(error) = self.radar.start_tracking(*priority_id) {
+                    debug!("ERROR - {error:?}")
+                }
 
                 None
             } else {
                 Some(target)
             }
         } else {
+            if let Some(id) = self.target {
+                self.radar.stop_tracking(id);
+            }
+
+            self.target = None;
+
             // If the previous target has been lost start tracking a new one.
             let new_target = self
                 .radar
@@ -141,14 +150,9 @@ impl RadarTester {
             if let Some((id, _)) = new_target {
                 self.target = Some(*id);
 
-                let jobs = [RadarJob::Track(*id), RadarJob::Search];
-                self.radar.contacts.track(*id);
-                self.radar.set_job_rotation(&jobs);
-            } else {
-                self.target = None;
-
-                let jobs = [RadarJob::Search];
-                self.radar.set_job_rotation(&jobs);
+                if let Err(error) = self.radar.start_tracking(*id) {
+                    debug!("ERROR - {error:?}")
+                }
             }
 
             None

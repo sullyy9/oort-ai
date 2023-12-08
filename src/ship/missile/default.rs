@@ -9,13 +9,19 @@ use super::{
         kinematics::{Acceleration, AngularVelocity, Heading, KinematicModel, Position, Velocity},
         Intercept,
     },
-    radar::{contacts::Contact, RadarJob, RadarManager},
+    radar::{
+        board::{ContactBoard, UniqueContactBoard},
+        contacts::Contact,
+        RadarManager,
+    },
     radio::{Radio, RadioMessage},
     stats::MaxAcceleration,
 };
 
+type Radar = RadarManager<UniqueContactBoard>;
+
 pub struct DefaultMissile {
-    radar: RadarManager,
+    radar: Radar,
     radio: Radio,
 
     target_position: Option<Vec2>,
@@ -93,9 +99,6 @@ impl Rotation for DefaultMissile {
 
 impl DefaultMissile {
     pub fn new() -> Self {
-        let mut radar = RadarManager::new();
-        radar.set_job_rotation(&[RadarJob::Search, RadarJob::Track(0)]);
-
         let radio = Radio::new();
         let target_position = if let Some(RadioMessage::Position(position)) = radio.receive() {
             let heading = position.angle();
@@ -106,7 +109,7 @@ impl DefaultMissile {
         };
 
         return Self {
-            radar,
+            radar: Radar::new(UniqueContactBoard::new()),
             radio,
 
             target_position,
@@ -142,8 +145,9 @@ impl ShipClassLoop for DefaultMissile {
                 });
 
             if let Some((&id, _)) = closest_contact {
-                let jobs = [RadarJob::Track(id)];
-                self.radar.set_job_rotation(&jobs);
+                if let Err(error) = self.radar.start_tracking(id) {
+                    debug!("ERROR - {error:?}")
+                }
             }
 
             None

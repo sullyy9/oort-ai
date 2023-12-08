@@ -11,3 +11,6 @@ oort_api = "0.78.2"
 
 [build-dependencies]
 rustsourcebundler = "0.11.3"
+
+[dev-dependencies]
+rstest = "0.18.2"

@@ -1,7 +1,10 @@
+use std::collections::BTreeSet;
+
 use oort_api::prelude::debug;
 
 use super::{
-    contacts::{Contact, ContactBoard, SearchContact, TrackedContact},
+    board::ContactBoard,
+    contacts::{Contact, TrackedContact},
     math::kinematics::{Acceleration, Position},
     search::ScanningRadar,
     track::TrackingRadar,
@@ -10,31 +13,33 @@ use super::{
 ////////////////////////////////////////////////////////////////
 
 #[derive(Clone, PartialEq, Debug)]
-pub enum RadarJob {
-    Search,
-    Track(usize),
-}
+pub struct RadarManager<Board: ContactBoard> {
+    pub contacts: Board,
 
-#[derive(Clone, PartialEq, Debug)]
-pub struct RadarManager {
-    pub contacts: ContactBoard,
-
-    job_rotation: Vec<RadarJob>,
-    job_index: usize,
+    tracked: BTreeSet<Board::ID>,
+    track_index: usize,
 
     search: ScanningRadar,
     track: TrackingRadar,
 }
 
+#[derive(Clone, PartialEq, Debug)]
+pub enum Error {
+    ContactNotFound,
+}
+
 ////////////////////////////////////////////////////////////////
 
-impl RadarManager {
-    pub fn new() -> Self {
+impl<Board: ContactBoard> RadarManager<Board>
+where
+    Board::ID: Ord + Clone,
+{
+    pub fn new(board: Board) -> Self {
         return Self {
-            contacts: ContactBoard::new(),
+            contacts: board,
 
-            job_rotation: vec![RadarJob::Search],
-            job_index: 0,
+            tracked: BTreeSet::new(),
+            track_index: 0,
 
             search: ScanningRadar::new(),
             track: TrackingRadar::new(),
@@ -44,92 +49,88 @@ impl RadarManager {
 
 ////////////////////////////////////////////////////////////////
 
-impl RadarManager {
+impl<Board: ContactBoard> RadarManager<Board>
+where
+    Board::ID: Ord + Copy,
+{
     pub fn scan<T: Position>(&mut self, emitter: &T) {
-        match self.job_rotation.get(self.job_index) {
-            Some(RadarJob::Search) => {
-                if let Some(contact) = self.search.scan(emitter).map(Contact::Search) {
-                    // self.contacts.add_or_update_contact(&contact);
-                    self.contacts.add(contact);
-                }
-            }
-            Some(RadarJob::Track(id)) => {
-                let updated_contact = self
-                    .contacts
-                    .take(*id)
-                    .and_then(|c| self.track.scan(c, emitter))
-                    .map(Contact::Tracked);
+        let tracked_id = self.tracked.iter().nth(self.track_index).cloned();
 
-                if let Some(contact) = updated_contact {
-                    self.contacts.insert(*id, contact)
-                }
+        if let Some(id) = tracked_id {
+            let updated_contact = self
+                .contacts
+                .remove(id)
+                .and_then(|c| self.track.scan(c, emitter))
+                .map(Contact::Tracked);
+
+            if let Some(contact) = updated_contact {
+                self.contacts.update(id, contact)
+            } else {
+                self.tracked.remove(&id);
             }
-            None => (),
-        };
+        } else {
+            if let Some(contact) = self.search.scan(emitter).map(Contact::Search) {
+                self.contacts.add(contact);
+            }
+        }
     }
 
     pub fn adjust<T: Acceleration>(&mut self, emitter: &T) {
-        self.job_index = if (self.job_index + 1) >= self.job_rotation.len() {
+        self.track_index = if self.track_index >= self.tracked.len() {
             0
         } else {
-            self.job_index + 1
+            self.track_index + 1
         };
 
-        match self.job_rotation.get(self.job_index) {
-            Some(RadarJob::Search) => self.search.adjust(emitter),
+        let tracked_id = self.tracked.iter().nth(self.track_index);
 
-            Some(RadarJob::Track(id)) => match self.contacts.get(*id) {
+        if let Some(id) = tracked_id {
+            match self.contacts.get(*id) {
                 Some(Contact::Tracked(contact)) => self.track.adjust(contact, emitter),
                 Some(Contact::Search(contact)) => {
                     self.track.adjust(&TrackedContact::from(contact), emitter)
                 }
                 None => debug!("!!! => contact not found"),
-            },
-            None => (),
+            }
+        } else {
+            self.search.adjust(emitter)
         }
     }
+}
 
-    pub fn set_job_rotation(&mut self, rotation: &[RadarJob]) {
-        // If a currently tracked target will stop being tracked in the new rotation, demote it
-        // to a search contact in the board.
-        let tracked_id = |job: &RadarJob| {
-            if let RadarJob::Track(id) = job {
-                Some(*id)
-            } else {
-                None
-            }
-        };
+////////////////////////////////////////////////////////////////
 
-        let new_tracked: Vec<usize> = rotation.iter().filter_map(tracked_id).collect();
-        let old_tracked = self.job_rotation.iter().filter_map(tracked_id);
-
-        let to_untrack = old_tracked.filter(|id| !new_tracked.contains(id));
-
-        for id in to_untrack {
-            let old_contact = self.contacts.take(id);
-            if let Some(Contact::Tracked(contact)) = old_contact {
-                let contact = Contact::Search(SearchContact::from(contact));
-                self.contacts.insert(id, contact);
-            } else if old_contact.is_some() {
-                panic!("Expected to get a tracked contact but got {old_contact:?}");
-            }
+impl<Board: ContactBoard> RadarManager<Board>
+where
+    Board::ID: Ord + Copy,
+{
+    pub fn start_tracking(&mut self, id: Board::ID) -> Result<(), Error> {
+        if self.contacts.get(id).is_none() {
+            return Err(Error::ContactNotFound);
         }
 
-        self.job_rotation = rotation.to_owned();
+        self.tracked.insert(id);
+        Ok(())
     }
 
-    pub fn get_job_rotation(&mut self) -> &[RadarJob] {
-        return &self.job_rotation;
+    pub fn stop_tracking(&mut self, id: Board::ID) {
+        self.tracked.remove(&id);
     }
+}
 
+////////////////////////////////////////////////////////////////
+
+impl<Board: ContactBoard> RadarManager<Board>
+where
+    Board::ID: std::fmt::Debug,
+{
     pub fn draw_contacts(&self) {
         debug!("--------------------------------");
         debug!("Radar");
         debug!("Contacts:   {}", self.contacts.count());
-        debug!("Job rota:   {:?}", self.job_rotation);
-        debug!("Next job:   {:?}", self.job_index);
+        debug!("Tracking:   {:?}", self.tracked);
 
-        self.contacts.draw_contacts();
+        self.contacts.draw();
         debug!("--------------------------------");
     }
 }

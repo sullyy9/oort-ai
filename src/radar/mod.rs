@@ -1,3 +1,4 @@
+pub mod board;
 mod common;
 pub mod contacts;
 mod emitter;
@@ -9,4 +10,4 @@ mod track;
 use super::{draw, math, ship};
 
 // Exports
-pub use self::manager::{RadarJob, RadarManager};
+pub use self::manager::RadarManager;

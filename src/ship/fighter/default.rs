@@ -8,14 +8,20 @@ use super::{
         kinematics::{Acceleration, AngularVelocity, Heading, KinematicModel, Position, Velocity},
         FiringSolution,
     },
-    radar::{contacts::Contact, RadarJob, RadarManager},
+    radar::{
+        board::{ContactBoard, UniqueContactBoard},
+        contacts::Contact,
+        RadarManager,
+    },
     radio::{Radio, RadioMessage},
 };
+
+type Radar = RadarManager<UniqueContactBoard>;
 
 ////////////////////////////////////////////////////////////////
 
 pub struct DefaultFighter {
-    radar: RadarManager,
+    radar: Radar,
     radio: Radio,
 
     acceleration: Vec2,
@@ -89,11 +95,8 @@ impl DefaultFighter {
     const BULLET_SPEED: f64 = 1000.0; // m/s
 
     pub fn new() -> Self {
-        let mut radar = RadarManager::new();
-        radar.set_job_rotation(&[RadarJob::Search]);
-
         return Self {
-            radar,
+            radar: Radar::new(UniqueContactBoard::new()),
             radio: Radio::new(),
 
             acceleration: vec2(0.0, 0.0),
@@ -132,6 +135,8 @@ impl DefaultFighter {
 
 impl ShipClassLoop for DefaultFighter {
     fn tick(&mut self) {
+        debug!("Default");
+
         // Update radar contacts.
         self.radar.scan(&self.position());
 
@@ -156,9 +161,9 @@ impl ShipClassLoop for DefaultFighter {
 
             if let Some((priority_id, _)) = priority {
                 self.target = Some(*priority_id);
-
-                let jobs = [RadarJob::Track(*priority_id), RadarJob::Search];
-                self.radar.set_job_rotation(&jobs);
+                if let Err(error) = self.radar.start_tracking(*priority_id) {
+                    debug!("ERROR - {error:?}")
+                }
 
                 None
             } else {
@@ -174,9 +179,9 @@ impl ShipClassLoop for DefaultFighter {
 
             if let Some((id, _)) = new_target {
                 self.target = Some(*id);
-
-                let jobs = [RadarJob::Track(*id), RadarJob::Search];
-                self.radar.set_job_rotation(&jobs);
+                if let Err(error) = self.radar.start_tracking(*id) {
+                    debug!("ERROR - {error:?}")
+                }
             }
 
             None

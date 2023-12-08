@@ -3,27 +3,31 @@ use oort_api::prelude::*;
 use super::{
     class::ShipClassLoop,
     control::{Rotation, Translation},
-    draw::{self, Colour, Trail},
+    draw,
     math::{
         kinematics::{Acceleration, AngularVelocity, Heading, KinematicModel, Position, Velocity},
         FiringSolution,
     },
-    radar::{contacts::Contact, RadarJob, RadarManager},
+    radar::{
+        board::{ContactBoard, UniqueContactBoard},
+        contacts::Contact,
+        RadarManager,
+    },
     radio::{Radio, RadioMessage},
 };
+
+type Radar = RadarManager<UniqueContactBoard>;
 
 ////////////////////////////////////////////////////////////////
 
 pub struct Dualist {
-    radar: RadarManager,
+    radar: Radar,
     radio: Radio,
 
     acceleration: Vec2,
 
-    target: Option<usize>,
-
-    target_trail_actual: Trail,
-    target_trail_aim: Trail,
+    enemy_fighter: Option<usize>,
+    enemy_missile: Option<usize>,
 }
 
 ////////////////////////////////////////////////////////////////
@@ -89,19 +93,14 @@ impl Dualist {
     const BULLET_SPEED: f64 = 1000.0; // m/s
 
     pub fn new() -> Self {
-        let mut radar = RadarManager::new();
-        radar.set_job_rotation(&[RadarJob::Search]);
-
         return Self {
-            radar,
+            radar: Radar::new(UniqueContactBoard::new()),
             radio: Radio::new(),
 
             acceleration: vec2(0.0, 0.0),
 
-            target: None,
-
-            target_trail_actual: Trail::with_length(256),
-            target_trail_aim: Trail::with_length(256),
+            enemy_fighter: None,
+            enemy_missile: None,
         };
     }
 }
@@ -132,74 +131,88 @@ impl Dualist {
 
 impl ShipClassLoop for Dualist {
     fn tick(&mut self) {
+        debug!("Role: Duelist");
+
         // Update radar contacts.
         self.radar.scan(&self.position());
 
+        let get_contact_and_id = |id| self.radar.contacts.get(id).map(|c| (id, c));
+        let get_contact = |id| self.radar.contacts.get(id);
+
         // Find the current target.
-        let current_target = self
-            .target
-            .and_then(|id| Some(id).zip(self.radar.contacts.get(id)));
+        let enemy_fighter = self.enemy_fighter.or_else(|| self.get_enemy_fighter());
 
-        // Check that their's not a higher priority target.
-        let current_target = if let Some((target_id, target)) = current_target {
-            let other_contacts = self
-                .radar
-                .contacts
-                .iter()
-                .filter(|(_, c)| matches!(c, Contact::Search(_)));
+        // Find an incoming missile.
+        let enemy_missile = self
+            .enemy_missile
+            .or_else(|| self.get_closest_enemy_missile());
 
-            let missiles = other_contacts.filter(|(_, c)| c.class() == Class::Missile);
+        // Configure the radar job rotation.
+        let mut start_tracking = Vec::new();
+        let mut stop_tracking = Vec::new();
 
-            let priority = missiles.min_by_key(|(_, c)| c.distance_to(self) as u32);
-            let priority = priority.filter(|(&id, _)| id != target_id);
-            let priority = priority.filter(|(_, m)| m.distance_to(self) < target.distance_to(self));
+        if let Some((id, Contact::Search(_))) = enemy_fighter.and_then(get_contact_and_id) {
+            debug!("new enemy fighter");
 
-            if let Some((priority_id, _)) = priority {
-                self.target = Some(*priority_id);
-
-                let jobs = [RadarJob::Track(*priority_id), RadarJob::Search];
-                self.radar.set_job_rotation(&jobs);
-
-                None
-            } else {
-                Some(target)
+            if let Some(old_id) = self.enemy_fighter {
+                if old_id != id {
+                    stop_tracking.push(old_id);
+                }
             }
+
+            start_tracking.push(id);
+        }
+
+        if enemy_fighter.is_none() {
+            if let Some(id) = self.enemy_fighter {
+                stop_tracking.push(id);
+            }
+        }
+
+        // Manage the job for tracking an incoming missile.
+        if let Some((id, Contact::Search(_))) = enemy_missile.and_then(get_contact_and_id) {
+            debug!("new enemy missile");
+
+            if let Some(old_id) = self.enemy_missile {
+                if old_id != id {
+                    stop_tracking.push(old_id);
+                }
+            }
+            start_tracking.push(id);
+        }
+
+        if enemy_missile.is_none() {
+            if let Some(old_id) = self.enemy_missile {
+                stop_tracking.push(old_id);
+            }
+        }
+
+        // Enagage a target. Prioritise missiles.
+        let target = if let Some(Contact::Tracked(contact)) = enemy_missile.and_then(get_contact) {
+            Some(contact)
+        } else if let Some(Contact::Tracked(contact)) = enemy_fighter.and_then(get_contact) {
+            Some(contact)
         } else {
-            // If the previous target has been lost start tracking a new one.
-            let new_target = self
-                .radar
-                .contacts
-                .iter()
-                .min_by_key(|(_, c)| c.distance_to(self) as u32);
-
-            if let Some((id, _)) = new_target {
-                self.target = Some(*id);
-
-                let jobs = [RadarJob::Track(*id), RadarJob::Search];
-                self.radar.set_job_rotation(&jobs);
-            }
-
             None
         };
 
-        // If we have a tracked target, get a firing solution.
-        let firing_solution = if let Some(Contact::Tracked(contact)) = current_target {
-            self.target_trail_actual.update(contact);
-            // self.target_trail_actual.draw(Colour::Green);
+        let firing_solution = target.and_then(|c| FiringSolution::new(self, Self::BULLET_SPEED, c));
 
-            debug!("Target velocity: {}", contact.velocity());
-            debug!("Target accel: {}", contact.acceleration());
-
-            FiringSolution::new(self, Self::BULLET_SPEED, contact)
+        // Decide where to move.
+        if let Some(fighter) = enemy_fighter.and_then(get_contact) {
+            let pos = fighter.position();
+            self.turn_to_face(&pos);
+            self.accelerate_towards(&pos);
         } else {
             let map_centre = vec2(0.0, 0.0);
             self.turn_to_face(&map_centre);
             self.accelerate_towards(&map_centre);
+        }
 
-            None
-        };
+        // Save the targets.
+        self.enemy_fighter = enemy_fighter;
+        self.enemy_missile = enemy_missile;
 
-        // Engage the target using the firing solution.
         if let Some(solution) = firing_solution {
             debug!("Engaging target");
             self.turn_to_track(&solution);
@@ -213,14 +226,55 @@ impl ShipClassLoop for Dualist {
                 self.fire_guns();
             }
 
-            self.target_trail_aim.update(&solution);
-            // self.target_trail_aim.draw(Colour::Yellow);
             draw::aim_reticle(&solution);
+        }
+
+        // Start or stop tracking targets.
+        for id in stop_tracking {
+            self.radar.stop_tracking(id);
+        }
+
+        for id in start_tracking {
+            if let Err(error) = self.radar.start_tracking(id) {
+                debug!("ERROR - {:?}", error);
+            }
         }
 
         self.radar.adjust(&KinematicModel::from(&*self));
         // draw::heading(self);
         self.radar.draw_contacts();
+    }
+}
+
+////////////////////////////////////////////////////////////////
+
+impl Dualist {
+    /// Description
+    /// -----------
+    /// Get the id and contact of an enemy fighter from the contact board.
+    /// There should only be 1 enemy fighter in this scenario.
+    ///
+    fn get_enemy_fighter(&self) -> Option<usize> {
+        return self
+            .radar
+            .contacts
+            .iter()
+            .find(|(_, c)| c.class() == Class::Fighter)
+            .map(|(id, _)| *id);
+    }
+
+    /// Description
+    /// -----------
+    /// Get the id and contact of the closest incoming missile from the contact board.
+    ///
+    fn get_closest_enemy_missile(&self) -> Option<usize> {
+        return self
+            .radar
+            .contacts
+            .iter()
+            .filter(|(_, c)| c.class() == Class::Missile)
+            .min_by_key(|(_, c)| c.distance_to(self) as u32)
+            .map(|(id, _)| *id);
     }
 }
 

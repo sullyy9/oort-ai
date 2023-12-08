@@ -1,13 +1,10 @@
-mod board;
 mod contact;
 mod error;
 mod search;
 mod track;
 
 // Imports
-use super::{draw, emitter, math, ship};
+use super::{emitter, math, ship};
 
 // Exports.
-pub use self::{
-    board::ContactBoard, contact::Contact, search::SearchContact, track::TrackedContact,
-};
+pub use self::{contact::Contact, search::SearchContact, track::TrackedContact};
