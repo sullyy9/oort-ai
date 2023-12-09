@@ -89,7 +89,7 @@ pub trait EllipticalShape: Shape {
     /// ---------
     /// * `angle` - Angle to measure the radius at. Measured from the positive x axis.
     ///
-    /// <img src="https://github.com/sullyy9/oort-ai/docs/images/EllipticalShape_radius.svg" width="426px" height="240px">
+    /// <img src="https://raw.githubusercontent.com/sullyy9/oort-ai/master/docs/images/EllipticalShape_radius.svg" width="426px" height="240px">
     ///
     fn radius(&self, angle: f64) -> f64;
 
