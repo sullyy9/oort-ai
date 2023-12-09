@@ -4,7 +4,7 @@ use crate::math::geometry::Shape;
 
 use super::{
     common::Radar,
-    contacts::SearchContact,
+    contacts::{RadarContact, SearchContact},
     emitter::Emitter,
     math::kinematics::{Acceleration, Position},
 };

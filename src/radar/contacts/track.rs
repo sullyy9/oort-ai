@@ -2,17 +2,12 @@ use std::collections::VecDeque;
 
 use oort_api::prelude::*;
 
-use crate::math::geometry::{EllipticalShape, Shape};
+use crate::math::geometry::{Ellipse, EllipticalShape, Shape};
+use crate::math::kinematics::{Acceleration, Position, Velocity};
+use crate::ship::stats::MaxAcceleration;
 
 use super::{
-    emitter::Emitter,
-    error::RadarContactError,
-    math::{
-        geometry::Ellipse,
-        kinematics::{Acceleration, Position, Velocity},
-    },
-    ship::stats::MaxAcceleration,
-    SearchContact,
+    emitter::Emitter, error::RadarContactError, RadarContact, SearchContact, TrackedRadarContact,
 };
 
 ////////////////////////////////////////////////////////////////
@@ -246,110 +241,31 @@ impl TrackedContact {
 /// field access
 ////////////////////////////////////////////////////////////////
 
-#[allow(dead_code)]
-impl TrackedContact {
-    /// Description
-    /// -----------
-    /// Return information about the radar emitter used to scan the contact.
-    ///
-    pub fn emitter(&self) -> &Emitter {
-        // Should be safe as type is always constructed with at least one entry in this field.
-        return self.emitter.back().unwrap();
-    }
+impl RadarContact for TrackedContact {
+    type AreaShape = Ellipse;
 
-    /// Description
-    /// -----------
-    /// Return the time at which the contact was last updated.
-    ///
-    /// Returns
-    /// -------
-    /// Time in seconds.
-    ///
-    pub fn time(&self) -> f64 {
+    fn time(&self) -> f64 {
         // Should be safe as type is always constructed with at least one entry in this field.
         return *self.time.back().unwrap();
     }
 
-    /// Description
-    /// -----------
-    /// Return the time elapsed since the last update. The current time is aquired from oort_api's
-    /// current_time() function.
-    ///
-    /// Returns
-    /// -------
-    /// Time elapsed in seconds.
-    ///
-    pub fn time_elapsed(&self) -> f64 {
+    fn time_elapsed(&self) -> f64 {
+        // Should be safe as type is always constructed with at least one entry in this field.
         return current_time() - self.time.back().unwrap();
     }
 
-    /// Description
-    /// -----------
-    /// Return the ship class of the contact.
-    ///
-    pub fn class(&self) -> Class {
+    fn class(&self) -> Class {
         return self.class;
     }
 
-    /// Description
-    /// -----------
-    /// Return the received signal strength of the contact.
-    ///
-    /// Returns
-    /// -------
-    /// RSSI in dB.
-    ///
-    pub fn rssi(&self) -> f64 {
-        // Should be safe as type is always constructed with at least one entry in this field.
-        return *self.rssi.back().unwrap();
-    }
-
-    /// Description
-    /// -----------
-    /// Return the signal to noise ratio of the contact.
-    ///
-    /// Returns
-    /// -------
-    /// SNR in dB.
-    ///
-    pub fn snr(&self) -> f64 {
-        // Should be safe as type is always constructed with at least one entry in this field.
-        return *self.snr.back().unwrap();
-    }
-
-    /// Description
-    /// -----------
-    /// Return the range of possible error in the contact.
-    ///
-    pub fn error(&self) -> &RadarContactError {
-        // Should be safe as type is always constructed with at least one entry in this field.
-        return self.error.back().unwrap();
-    }
-}
-
-////////////////////////////////////////////////////////////////
-
-impl TrackedContact {
-    /// Description
-    /// -----------
-    /// Get the area covering the posible posistions of the contact at a specific point in time
-    /// after it was detected.
-    ///
-    /// The area looks like a trapezoid with rounded corners.
-    /// The possibility that the contact is at any point within the area is not uniform. It is more
-    /// likely towards the centre. Due to the combination of distance and bearing error probability
-    /// it is least likely in the corners. Area would be perhaps be better represented by a elipse.
-    ///
-    /// TODO Would an elipse be a better representation (see above)? Allow user to define minimum
-    /// probability when creating.
-    ///  
-    pub fn get_area_after(&self, time: f64) -> Ellipse {
+    fn get_area_after(&self, time: f64) -> Self::AreaShape {
         let mut area = self.get_initial_area();
 
         // Move the area according to it's approximate velocity.
         area.translate(&(*self.velocity.back().unwrap() * time));
 
         // Expand the area to take into account velocity error and possible accleration.
+        // TODO: should be using the actual acceleration here.
         let max_accel = MaxAcceleration::from(self.class);
         area.expand(
             self.error.back().unwrap().velocity * time
@@ -358,14 +274,17 @@ impl TrackedContact {
 
         return area;
     }
+}
 
+impl TrackedRadarContact for TrackedContact {}
+
+////////////////////////////////////////////////////////////////
+
+impl TrackedContact {
     /// Description
     /// -----------
-    /// Fet the polygon describing the area in which a radar contact is present at the moment it was
-    /// detected. This takes into account the error in the position reading.
-    ///
-    /// The top and bottom of the resulting shape should be arcs but straight lines are used here
-    /// instead.
+    /// Get the area in which a radar contact is present at the moment it was detected, taking
+    /// into account the error in the position reading.
     ///
     pub fn get_initial_area(&self) -> Ellipse {
         let emitter = self.emitter.back().unwrap();

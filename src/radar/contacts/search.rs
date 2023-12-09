@@ -1,17 +1,10 @@
 use oort_api::prelude::*;
 
-use crate::math::geometry::{EllipticalShape, Shape};
+use crate::math::geometry::{Ellipse, EllipticalShape, Shape};
+use crate::math::kinematics::{Position, Velocity};
+use crate::ship::stats::MaxAcceleration;
 
-use super::{
-    emitter::Emitter,
-    error::RadarContactError,
-    math::{
-        geometry::Ellipse,
-        kinematics::{Position, Velocity},
-    },
-    ship::stats::MaxAcceleration,
-    TrackedContact,
-};
+use super::{emitter::Emitter, error::RadarContactError, interface::RadarContact, TrackedContact};
 
 ////////////////////////////////////////////////////////////////
 
@@ -60,8 +53,8 @@ impl From<TrackedContact> for SearchContact {
             class: contact.class(),
             position: contact.position(),
             velocity: contact.velocity(),
-            rssi: contact.rssi(),
-            snr: contact.snr(),
+            rssi: contact.rssi.pop_back().unwrap(),
+            snr: contact.snr.pop_back().unwrap(),
             error: contact.error.pop_back().unwrap(),
         };
     }
@@ -84,94 +77,23 @@ impl Velocity for SearchContact {
 }
 
 ////////////////////////////////////////////////////////////////
-/// field access
-////////////////////////////////////////////////////////////////
 
-#[allow(dead_code)]
-impl SearchContact {
-    /// Description
-    /// -----------
-    /// Return information about the radar emitter used to scan the contact.
-    ///
-    pub fn emitter(&self) -> &Emitter {
-        return &self.emitter;
-    }
+impl RadarContact for SearchContact {
+    type AreaShape = Ellipse;
 
-    /// Description
-    /// -----------
-    /// Return the time at which the contact was last updated.
-    ///
-    /// Returns
-    /// -------
-    /// Time in seconds.
-    ///
-    pub fn time(&self) -> f64 {
+    fn time(&self) -> f64 {
         return self.time;
     }
 
-    /// Description
-    /// -----------
-    /// Return the time elapsed since the last update. The current time is aquired from oort_api's
-    /// current_time() function.
-    ///
-    /// Returns
-    /// -------
-    /// Time elapsed in seconds.
-    ///
-    pub fn time_elapsed(&self) -> f64 {
+    fn time_elapsed(&self) -> f64 {
         return current_time() - self.time;
     }
 
-    /// Description
-    /// -----------
-    /// Return the ship class of the contact.
-    ///
-    pub fn class(&self) -> Class {
+    fn class(&self) -> Class {
         return self.class;
     }
 
-    /// Description
-    /// -----------
-    /// Return the received signal strength of the contact.
-    ///
-    /// Returns
-    /// -------
-    /// RSSI in dB.
-    ///
-    pub fn rssi(&self) -> f64 {
-        return self.rssi;
-    }
-
-    /// Description
-    /// -----------
-    /// Return the signal to noise ratio of the contact.
-    ///
-    /// Returns
-    /// -------
-    /// SNR in dB.
-    ///
-    pub fn snr(&self) -> f64 {
-        return self.snr;
-    }
-
-    /// Description
-    /// -----------
-    /// Return the range of possible error in the contact.
-    ///
-    pub fn error(&self) -> &RadarContactError {
-        return &self.error;
-    }
-}
-
-////////////////////////////////////////////////////////////////
-
-impl SearchContact {
-    /// Description
-    /// -----------
-    /// Get the area covering the posible posistions of the contact at a specific point in time
-    /// after it was detected.
-    ///  
-    pub fn get_area_after(&self, time: f64) -> Ellipse {
+    fn get_area_after(&self, time: f64) -> Self::AreaShape {
         let mut area = self.get_initial_area();
 
         // Move the area according to it's approximate velocity.
@@ -183,7 +105,11 @@ impl SearchContact {
 
         return area;
     }
+}
 
+////////////////////////////////////////////////////////////////
+
+impl SearchContact {
     /// Description
     /// -----------
     /// Get the area in which a radar contact is present at the moment it was detected, taking

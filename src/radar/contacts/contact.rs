@@ -1,11 +1,8 @@
 use oort_api::prelude::{Class, Vec2};
 
-use crate::math::kinematics::Position;
+use crate::math::{geometry::Ellipse, kinematics::Position};
 
-use super::{
-    math::geometry::{Ellipse, Polygon},
-    SearchContact, TrackedContact,
-};
+use super::{interface::RadarContact, SearchContact, TrackedContact};
 
 ////////////////////////////////////////////////////////////////
 
