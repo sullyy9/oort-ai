@@ -1,9 +1,7 @@
 use oort_api::prelude::*;
 
-use crate::{
-    draw::{self, Colour},
-    math::kinematics::Position,
-};
+use crate::draw::{self, Colour};
+use crate::math::kinematics::Position;
 
 use super::shape::{EllipticalShape, Shape};
 
