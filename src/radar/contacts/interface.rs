@@ -1,11 +1,14 @@
-use oort_api::Class;
+use oort_api::prelude::{Class, ScanResult};
 
+use crate::math::geometry::Shape;
 use crate::math::kinematics::{Acceleration, Position, Velocity};
+
+use super::emitter::Emitter;
 
 ////////////////////////////////////////////////////////////////
 
 pub trait RadarContact: Position + Velocity {
-    type AreaShape;
+    type AreaShape: Shape;
 
     /// Description
     /// -----------
@@ -52,6 +55,8 @@ pub trait RadarContact: Position + Velocity {
 
 ////////////////////////////////////////////////////////////////
 
-pub trait TrackedRadarContact: RadarContact + Acceleration {}
+pub trait TrackedRadarContact: RadarContact + Acceleration {
+    fn update(&mut self, emitter: &Emitter, scan: &ScanResult);
+}
 
 ////////////////////////////////////////////////////////////////

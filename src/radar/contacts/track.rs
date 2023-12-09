@@ -185,62 +185,6 @@ impl Acceleration for TrackedContact {
 
 ////////////////////////////////////////////////////////////////
 
-impl TrackedContact {
-    pub fn update(&mut self, contact: ScanResult, emitter: &Emitter) {
-        if self.emitter.len() == Self::MAX_DATA_POINTS {
-            self.emitter.pop_front();
-        }
-        self.emitter.push_back(emitter.clone());
-
-        if self.time.len() == Self::MAX_DATA_POINTS {
-            self.time.pop_front();
-        }
-        self.time.push_back(current_time());
-
-        if self.position.len() == Self::MAX_DATA_POINTS {
-            self.position.pop_front();
-        }
-        self.position.push_back(contact.position);
-
-        if self.velocity.len() == Self::MAX_DATA_POINTS {
-            self.velocity.pop_front();
-        }
-        self.velocity.push_back(contact.velocity);
-
-        if self.rssi.len() == Self::MAX_DATA_POINTS {
-            self.rssi.pop_front();
-        }
-        self.rssi.push_back(contact.rssi);
-
-        if self.snr.len() == Self::MAX_DATA_POINTS {
-            self.snr.pop_front();
-        }
-        self.snr.push_back(contact.snr);
-
-        if self.error.len() == Self::MAX_DATA_POINTS {
-            self.error.pop_front();
-        }
-        self.error.push_back(RadarContactError::from(contact));
-
-        // Find the average change in velocity to estimate the acceleration.
-        let mut sum = vec2(0.0, 0.0);
-
-        let records = std::iter::zip(self.velocity.iter(), self.time.iter());
-        for (r1, r2) in std::iter::zip(records.clone(), records.skip(1)) {
-            let vdelta = r1.0 - r2.0;
-            let tdelta = r1.1 - r2.1;
-            let accel = vdelta / tdelta;
-            sum += accel;
-        }
-
-        self.acceleration = sum / (self.velocity.len() - 1) as f64;
-    }
-}
-
-////////////////////////////////////////////////////////////////
-/// field access
-////////////////////////////////////////////////////////////////
-
 impl RadarContact for TrackedContact {
     type AreaShape = Ellipse;
 
@@ -276,7 +220,59 @@ impl RadarContact for TrackedContact {
     }
 }
 
-impl TrackedRadarContact for TrackedContact {}
+////////////////////////////////////////////////////////////////
+
+impl TrackedRadarContact for TrackedContact {
+    fn update(&mut self, emitter: &Emitter, scan: &ScanResult) {
+        if self.emitter.len() == Self::MAX_DATA_POINTS {
+            self.emitter.pop_front();
+        }
+        self.emitter.push_back(emitter.clone());
+
+        if self.time.len() == Self::MAX_DATA_POINTS {
+            self.time.pop_front();
+        }
+        self.time.push_back(current_time());
+
+        if self.position.len() == Self::MAX_DATA_POINTS {
+            self.position.pop_front();
+        }
+        self.position.push_back(scan.position);
+
+        if self.velocity.len() == Self::MAX_DATA_POINTS {
+            self.velocity.pop_front();
+        }
+        self.velocity.push_back(scan.velocity);
+
+        if self.rssi.len() == Self::MAX_DATA_POINTS {
+            self.rssi.pop_front();
+        }
+        self.rssi.push_back(scan.rssi);
+
+        if self.snr.len() == Self::MAX_DATA_POINTS {
+            self.snr.pop_front();
+        }
+        self.snr.push_back(scan.snr);
+
+        if self.error.len() == Self::MAX_DATA_POINTS {
+            self.error.pop_front();
+        }
+        self.error.push_back(RadarContactError::from(scan));
+
+        // Find the average change in velocity to estimate the acceleration.
+        let mut sum = vec2(0.0, 0.0);
+
+        let records = std::iter::zip(self.velocity.iter(), self.time.iter());
+        for (r1, r2) in std::iter::zip(records.clone(), records.skip(1)) {
+            let vdelta = r1.0 - r2.0;
+            let tdelta = r1.1 - r2.1;
+            let accel = vdelta / tdelta;
+            sum += accel;
+        }
+
+        self.acceleration = sum / (self.velocity.len() - 1) as f64;
+    }
+}
 
 ////////////////////////////////////////////////////////////////
 
