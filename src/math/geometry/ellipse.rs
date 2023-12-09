@@ -1,9 +1,15 @@
 use oort_api::prelude::*;
 
-use super::{draw, kinematics::Position};
+use crate::{
+    draw::{self, Colour},
+    math::kinematics::Position,
+};
+
+use super::shape::{EllipticalShape, Shape};
 
 ////////////////////////////////////////////////////////////////
 
+#[derive(Clone, PartialEq, Debug)]
 pub struct Ellipse {
     centre: Vec2,
     orientation: f64,
@@ -28,7 +34,7 @@ impl Ellipse {
     /// Since +x axis is heading 0, height is size along the x axis.
     ///
     pub fn new<T: Position>(centre: &T, orientation: f64, width: f64, height: f64) -> Self {
-        // Make them allways be W I D E B O I S. That way we know which axis to iterate over when
+        // Make them always be W I D E B O I S. That way we know which axis to iterate over when
         // drawing.
         return if width > height {
             Self {
@@ -49,40 +55,13 @@ impl Ellipse {
 }
 
 ////////////////////////////////////////////////////////////////
-/// Manipulation.
-////////////////////////////////////////////////////////////////
 
-impl Ellipse {
-    /// Description
-    /// -----------
-    /// Translate the ellipse by the given ammount.
-    ///
-    /// Parmaters
-    /// ---------
-    /// * `vector` - Ammount to translate the ellipse by.
-    ///
-    pub fn translate(&mut self, vector: &Vec2) {
+impl Shape for Ellipse {
+    fn translate(&mut self, vector: &Vec2) {
         self.centre += vector;
     }
 
-    /// Description
-    /// -----------
-    /// Expand the ellipse by the given ammount in all directions.
-    ///
-    /// Parmaters
-    /// ---------
-    /// * `value` - Ammount to expand the ellipse by.
-    ///
-    pub fn expand(&mut self, value: f64) {
-        self.width += value * 2.0;
-        self.height += value * 2.0;
-    }
-}
-
-////////////////////////////////////////////////////////////////
-
-impl Ellipse {
-    pub fn contains<T: Position>(&self, point: &T) -> bool {
+    fn contains<T: Position>(&self, point: &T) -> bool {
         let point = point.position_relative_to(self);
         let point = point.rotate(-self.orientation);
 
@@ -94,57 +73,28 @@ impl Ellipse {
         return (xpart + ypart) <= 1.0;
     }
 
-    pub fn max_distance_to<T: Position>(&self, point: &T) -> f64 {
+    fn min_distance_to<T: Position>(&self, point: &T) -> f64 {
         let centre_distance = point.distance_to(&self.centre);
-        let angle = point.bearing_to(&self.centre) - self.orientation;
-
-        let a = self.height / 2.0;
-        let b = self.width / 2.0;
-        let radius = (a * b)
-            / f64::sqrt(
-                (a.powi(2) * f64::sin(angle).powi(2)) + (b.powi(2) * f64::cos(angle).powi(2)),
-            );
-
-        println!("angle: {}", angle);
-        println!("radius: {}", radius);
-        debug!("angle: {}", angle);
-        debug!("radius: {}", radius);
-        return centre_distance + radius;
-    }
-
-    pub fn min_distance_to<T: Position>(&self, point: &T) -> f64 {
-        let centre_distance = point.distance_to(&self.centre);
-        let angle = point.bearing_to(&self.centre) - self.orientation;
-
-        let a = self.height / 2.0;
-        let b = self.width / 2.0;
-        let radius = (a * b)
-            / f64::sqrt(
-                (a.powi(2) * f64::sin(angle).powi(2)) + (b.powi(2) * f64::cos(angle).powi(2)),
-            );
+        let radius = self.radius(point.bearing_to(&self.centre));
 
         return (centre_distance - radius).abs();
     }
 
-    pub fn minmax_distance_to<T: Position>(&self, point: &T) -> (f64, f64) {
+    fn max_distance_to<T: Position>(&self, point: &T) -> f64 {
         let centre_distance = point.distance_to(&self.centre);
-        let angle = point.bearing_to(&self.centre) - self.orientation;
+        let radius = self.radius(point.bearing_to(&self.centre));
 
-        let a = self.height / 2.0;
-        let b = self.width / 2.0;
-        let radius = (a * b)
-            / f64::sqrt(
-                (a.powi(2) * f64::sin(angle).powi(2)) + (b.powi(2) * f64::cos(angle).powi(2)),
-            );
+        return centre_distance + radius;
+    }
+
+    fn minmax_distance_to<T: Position>(&self, point: &T) -> (f64, f64) {
+        let centre_distance = point.distance_to(&self.centre);
+        let radius = self.radius(point.bearing_to(&self.centre));
 
         return ((centre_distance - radius).abs(), centre_distance + radius);
     }
-}
 
-////////////////////////////////////////////////////////////////
-
-impl Ellipse {
-    pub fn draw(&self, colour: draw::Colour) {
+    fn draw(&self, colour: Colour) {
         let a = self.height / 2.0;
         let b = self.width / 2.0;
 
@@ -189,9 +139,55 @@ impl Ellipse {
 
 ////////////////////////////////////////////////////////////////
 
+impl EllipticalShape for Ellipse {
+    fn radius(&self, angle: f64) -> f64 {
+        let angle = angle - self.orientation;
+        let semi_major_axis = self.height / 2.0;
+        let semi_minor_axis = self.width / 2.0;
+
+        let radius = (semi_major_axis * semi_minor_axis)
+            / f64::sqrt(
+                (semi_major_axis.powi(2) * f64::sin(angle).powi(2))
+                    + (semi_minor_axis.powi(2) * f64::cos(angle).powi(2)),
+            );
+
+        return radius;
+    }
+
+    fn expand(&mut self, value: f64) {
+        self.width += value * 2.0;
+        self.height += value * 2.0;
+    }
+}
+
+////////////////////////////////////////////////////////////////
+
 #[cfg(test)]
 mod tests {
+    use std::f64::consts::{FRAC_PI_2, FRAC_PI_4, PI};
+
     use super::*;
+
+    #[test]
+    fn test_radius() {
+        let height = 10.0;
+        let width = 5.0;
+        let ellipse = Ellipse::new(&vec2(0.0, 0.0), 0.0, width, height);
+
+        assert_eq!(ellipse.radius(0.0), height / 2.0);
+        assert_eq!(ellipse.radius(FRAC_PI_2), width / 2.0);
+        assert_eq!(ellipse.radius(PI), height / 2.0);
+        assert_eq!(ellipse.radius(PI + FRAC_PI_2), width / 2.0);
+
+        let height = 5.0;
+        let width = 10.0;
+        let ellipse = Ellipse::new(&vec2(0.0, 0.0), FRAC_PI_4, width, height);
+
+        assert_eq!(ellipse.radius(FRAC_PI_4), height / 2.0);
+        assert_eq!(ellipse.radius(FRAC_PI_2 + FRAC_PI_4), width / 2.0);
+        assert_eq!(ellipse.radius(PI + FRAC_PI_4), height / 2.0);
+        assert_eq!(ellipse.radius(-FRAC_PI_4), width / 2.0);
+    }
 
     #[test]
     fn test_contains() {

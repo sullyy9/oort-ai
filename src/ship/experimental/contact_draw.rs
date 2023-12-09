@@ -1,5 +1,7 @@
 use oort_api::prelude::*;
 
+use crate::math::geometry::Shape;
+
 use super::{
     draw::{self, Colour},
     math::{

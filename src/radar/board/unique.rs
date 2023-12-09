@@ -1,6 +1,6 @@
 use std::collections::BTreeMap;
 
-use crate::{draw::Colour, radar::contacts::Contact};
+use crate::{draw::Colour, math::geometry::Shape, radar::contacts::Contact};
 
 use super::interface::ContactBoard;
 

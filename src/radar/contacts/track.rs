@@ -2,6 +2,8 @@ use std::collections::VecDeque;
 
 use oort_api::prelude::*;
 
+use crate::math::geometry::{EllipticalShape, Shape};
+
 use super::{
     emitter::Emitter,
     error::RadarContactError,

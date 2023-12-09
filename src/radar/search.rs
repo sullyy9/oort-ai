@@ -1,5 +1,7 @@
 use oort_api::prelude::{current_time, TICK_LENGTH};
 
+use crate::math::geometry::Shape;
+
 use super::{
     common::Radar,
     contacts::SearchContact,
