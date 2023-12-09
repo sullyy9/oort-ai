@@ -68,10 +68,8 @@ where
             } else {
                 self.tracked.remove(&id);
             }
-        } else {
-            if let Some(contact) = self.search.scan(emitter).map(Contact::Search) {
-                self.contacts.add(contact);
-            }
+        } else if let Some(contact) = self.search.scan(emitter).map(Contact::Search) {
+            self.contacts.add(contact);
         }
     }
 

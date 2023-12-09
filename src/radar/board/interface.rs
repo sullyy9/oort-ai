@@ -14,7 +14,7 @@ pub trait ContactBoard: IntoIterator {
     fn get(&self, id: Self::ID) -> Option<&Contact>;
     fn remove(&mut self, id: Self::ID) -> Option<Contact>;
 
-    fn iter<'a>(&'a self) -> Self::Iter<'a>;
+    fn iter(&self) -> Self::Iter<'_>;
     fn count(&self) -> usize;
 
     fn draw(&self);
