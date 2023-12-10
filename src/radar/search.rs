@@ -3,7 +3,7 @@ use oort_api::prelude::{current_time, TICK_LENGTH};
 use crate::math::geometry::Shape;
 
 use super::{
-    common::RadarControl,
+    common::{RadarControl, SearchRadarControl},
     contacts::{RadarContact, SearchContact},
     emitter::Emitter,
     math::kinematics::{Acceleration, Position},
@@ -24,6 +24,8 @@ impl RadarControl for ScanningRadar {}
 ////////////////////////////////////////////////////////////////
 
 impl ScanningRadar {
+    const STANDARD_WIDTH: f64 = std::f64::consts::PI / 8.0;
+
     pub fn new() -> Self {
         return Self {
             last_heading: 0.0,
@@ -34,14 +36,14 @@ impl ScanningRadar {
 
 ////////////////////////////////////////////////////////////////
 
-impl ScanningRadar {
-    const STANDARD_WIDTH: f64 = std::f64::consts::PI / 8.0;
+impl SearchRadarControl for ScanningRadar {
+    type Contact = SearchContact;
 
     /// Description
     /// -----------
     /// Scan for a contact in the radar beam.
     ///
-    pub fn scan<T: Position>(&mut self, emitter: &T) -> Option<SearchContact> {
+    fn scan<T: Position>(&mut self, emitter: &T) -> Option<SearchContact> {
         let emitter = Emitter::new(emitter, self);
 
         let contact = self
@@ -58,7 +60,7 @@ impl ScanningRadar {
     /// -----------
     /// Adjust the radar beam for the next tick.
     ///
-    pub fn adjust<T: Acceleration>(&self, emitter: &T) {
+    fn adjust<T: Acceleration>(&self, emitter: &T) {
         self.set_width(Self::STANDARD_WIDTH);
 
         // If we picked up a contact on the last scan then this time, scan behind them.

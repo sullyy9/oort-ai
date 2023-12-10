@@ -4,6 +4,7 @@ use oort_api::prelude::debug;
 
 use super::{
     board::ContactBoard,
+    common::{SearchRadarControl, TrackingRadarControl},
     contacts::{Contact, TrackedContact},
     math::kinematics::{Acceleration, Position},
     search::ScanningRadar,
@@ -60,7 +61,11 @@ where
             let updated_contact = self
                 .contacts
                 .remove(id)
-                .and_then(|c| self.track.scan(c, emitter))
+                .map(|c| match c {
+                    Contact::Search(contact) => TrackedContact::from(contact),
+                    Contact::Tracked(contact) => contact,
+                })
+                .and_then(|c| self.track.scan(emitter, c))
                 .map(Contact::Tracked);
 
             if let Some(contact) = updated_contact {
@@ -84,9 +89,9 @@ where
 
         if let Some(id) = tracked_id {
             match self.contacts.get(*id) {
-                Some(Contact::Tracked(contact)) => self.track.adjust(contact, emitter),
+                Some(Contact::Tracked(contact)) => self.track.adjust(emitter, contact),
                 Some(Contact::Search(contact)) => {
-                    self.track.adjust(&TrackedContact::from(contact), emitter)
+                    self.track.adjust(emitter, &TrackedContact::from(contact))
                 }
                 None => debug!("!!! => contact not found"),
             }
