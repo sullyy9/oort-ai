@@ -1,12 +1,12 @@
 use oort_api::prelude::*;
 
 use crate::math::geometry::Shape;
+use crate::math::kinematics::{Acceleration, Position};
 
 use super::{
-    common::{RadarControl, TrackingRadarControl},
     contacts::{RadarContact, TrackedContact, TrackedRadarContact},
     emitter::Emitter,
-    math::kinematics::{Acceleration, Position},
+    interface::{RadarControl, TrackingRadarControl},
 };
 
 ////////////////////////////////////////////////////////////////

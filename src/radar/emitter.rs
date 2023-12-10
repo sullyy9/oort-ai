@@ -1,6 +1,6 @@
 use oort_api::prelude::*;
 
-use super::{common::RadarControl, math::kinematics::Position};
+use super::{control::RadarControl, math::kinematics::Position};
 
 ////////////////////////////////////////////////////////////////
 

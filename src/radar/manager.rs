@@ -2,13 +2,12 @@ use std::collections::BTreeSet;
 
 use oort_api::prelude::debug;
 
+use crate::math::kinematics::{Acceleration, Position};
+
 use super::{
     board::ContactBoard,
-    common::{SearchRadarControl, TrackingRadarControl},
     contacts::{Contact, TrackedContact},
-    math::kinematics::{Acceleration, Position},
-    search::ScanningRadar,
-    track::TrackingRadar,
+    control::{SearchRadar, SearchRadarControl, TrackingRadar, TrackingRadarControl},
 };
 
 ////////////////////////////////////////////////////////////////
@@ -20,7 +19,7 @@ pub struct RadarManager<Board: ContactBoard> {
     tracked: BTreeSet<Board::ID>,
     track_index: usize,
 
-    search: ScanningRadar,
+    search: SearchRadar,
     track: TrackingRadar,
 }
 
@@ -42,7 +41,7 @@ where
             tracked: BTreeSet::new(),
             track_index: 0,
 
-            search: ScanningRadar::new(),
+            search: SearchRadar::new(),
             track: TrackingRadar::new(),
         };
     }

@@ -1,29 +1,29 @@
 use oort_api::prelude::{current_time, TICK_LENGTH};
 
 use crate::math::geometry::Shape;
+use crate::math::kinematics::{Acceleration, Position};
 
 use super::{
-    common::{RadarControl, SearchRadarControl},
     contacts::{RadarContact, SearchContact},
     emitter::Emitter,
-    math::kinematics::{Acceleration, Position},
+    interface::{RadarControl, SearchRadarControl},
 };
 
 ////////////////////////////////////////////////////////////////
 
 #[derive(Clone, PartialEq, Debug)]
-pub struct ScanningRadar {
+pub struct SearchRadar {
     last_heading: f64,
     last_contact: Option<SearchContact>,
 }
 
 ////////////////////////////////////////////////////////////////
 
-impl RadarControl for ScanningRadar {}
+impl RadarControl for SearchRadar {}
 
 ////////////////////////////////////////////////////////////////
 
-impl ScanningRadar {
+impl SearchRadar {
     const STANDARD_WIDTH: f64 = std::f64::consts::PI / 8.0;
 
     pub fn new() -> Self {
@@ -36,7 +36,7 @@ impl ScanningRadar {
 
 ////////////////////////////////////////////////////////////////
 
-impl SearchRadarControl for ScanningRadar {
+impl SearchRadarControl for SearchRadar {
     type Contact = SearchContact;
 
     /// Description

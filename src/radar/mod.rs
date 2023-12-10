@@ -1,10 +1,9 @@
 pub mod board;
-mod common;
 pub mod contacts;
 mod emitter;
 mod manager;
-mod search;
-mod track;
+
+mod control;
 
 // Imports
 use super::{draw, math, ship};
