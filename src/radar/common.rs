@@ -2,7 +2,7 @@ use oort_api::prelude::*;
 
 ////////////////////////////////////////////////////////////////
 
-pub trait Radar {
+pub trait RadarControl {
     const MAX_RADAR_RANGE: f64 = 25000.0;
 
     fn set_heading(&self, heading: f64) {

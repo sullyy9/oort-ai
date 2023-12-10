@@ -1,6 +1,6 @@
 use oort_api::prelude::*;
 
-use super::{common::Radar, math::kinematics::Position};
+use super::{common::RadarControl, math::kinematics::Position};
 
 ////////////////////////////////////////////////////////////////
 
@@ -26,7 +26,7 @@ impl Emitter {
     /// -----------
     /// Return a new Emitter describing the given ships radar.
     ///
-    pub fn new<T: Position, R: Radar>(emitter: &T, radar: &R) -> Self {
+    pub fn new<T: Position, R: RadarControl>(emitter: &T, radar: &R) -> Self {
         return Self {
             position: emitter.position(),
             min_distance: radar.get_min_distance(),

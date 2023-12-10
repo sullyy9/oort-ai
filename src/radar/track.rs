@@ -3,8 +3,8 @@ use oort_api::prelude::*;
 use crate::math::geometry::Shape;
 
 use super::{
-    common::Radar,
-    contacts::{Contact, RadarContact, TrackedContact},
+    common::RadarControl,
+    contacts::{Contact, RadarContact, TrackedContact, TrackedRadarContact},
     emitter::Emitter,
     math::kinematics::{Acceleration, Position},
 };
@@ -16,7 +16,7 @@ pub struct TrackingRadar();
 
 ////////////////////////////////////////////////////////////////
 
-impl Radar for TrackingRadar {}
+impl RadarControl for TrackingRadar {}
 
 ////////////////////////////////////////////////////////////////
 
@@ -43,7 +43,7 @@ impl TrackingRadar {
 
         let emitter = Emitter::new(emitter, self);
         return self.get_scan().map(|s| {
-            target.update(s, &emitter);
+            target.update(&emitter, &s);
             target
         });
     }

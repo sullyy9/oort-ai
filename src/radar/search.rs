@@ -3,7 +3,7 @@ use oort_api::prelude::{current_time, TICK_LENGTH};
 use crate::math::geometry::Shape;
 
 use super::{
-    common::Radar,
+    common::RadarControl,
     contacts::{RadarContact, SearchContact},
     emitter::Emitter,
     math::kinematics::{Acceleration, Position},
@@ -19,7 +19,7 @@ pub struct ScanningRadar {
 
 ////////////////////////////////////////////////////////////////
 
-impl Radar for ScanningRadar {}
+impl RadarControl for ScanningRadar {}
 
 ////////////////////////////////////////////////////////////////
 
