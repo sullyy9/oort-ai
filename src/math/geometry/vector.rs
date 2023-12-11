@@ -34,16 +34,16 @@ impl Vector {
 
     /// Description
     /// -----------
-    /// Return a unit vector pointing along the x axis. 
-    /// 
+    /// Return a unit vector pointing along the x axis.
+    ///
     pub fn x_axis() -> Self {
         return Self(vec2(1.0, 0.0));
     }
 
     /// Description
     /// -----------
-    /// Return a unit vector pointing along the y axis. 
-    /// 
+    /// Return a unit vector pointing along the y axis.
+    ///
     pub fn y_axis() -> Self {
         return Self(vec2(0.0, 1.0));
     }

@@ -63,6 +63,20 @@ impl From<Point> for Vec2 {
 }
 
 ////////////////////////////////////////////////////////////////
+// coordinates
+////////////////////////////////////////////////////////////////
+
+impl Point {
+    pub fn x(&self) -> f64 {
+        return self.0.x;
+    }
+
+    pub fn y(&self) -> f64 {
+        return self.0.y;
+    }
+}
+
+////////////////////////////////////////////////////////////////
 // operations
 ////////////////////////////////////////////////////////////////
 
@@ -80,6 +94,11 @@ impl Point {
     pub fn distance_to<T: AsPoint>(&self, other: &T) -> f64 {
         let other = other.as_point();
         return self.0.distance(other.0);
+    }
+
+    pub fn bearing_to<T: AsPoint>(&self, other: &T) -> f64 {
+        let other = other.as_point();
+        return Vector::x_axis().angle_between(&self.vector_to(&other));
     }
 
     pub fn translated_by<T: AsVector>(&self, vector: &T) -> Self {
