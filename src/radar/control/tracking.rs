@@ -28,6 +28,12 @@ impl TrackingRadar {
     }
 }
 
+impl Default for TrackingRadar {
+    fn default() -> Self {
+        return Self::new();
+    }
+}
+
 ////////////////////////////////////////////////////////////////
 
 impl TrackingRadarControl for TrackingRadar {

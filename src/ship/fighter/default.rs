@@ -1,5 +1,7 @@
 use oort_api::prelude::*;
 
+use crate::radar::contacts::{SearchContact, TrackedContact};
+
 use super::{
     class::ShipClassLoop,
     control::{Rotation, Translation},
@@ -11,17 +13,15 @@ use super::{
     radar::{
         board::{ContactBoard, UniqueContactBoard},
         contacts::Contact,
-        RadarManager,
+        CompositeRadar,
     },
     radio::{Radio, RadioMessage},
 };
 
-type Radar = RadarManager<UniqueContactBoard>;
-
 ////////////////////////////////////////////////////////////////
 
 pub struct DefaultFighter {
-    radar: Radar,
+    radar: CompositeRadar,
     radio: Radio,
 
     acceleration: Vec2,
@@ -96,7 +96,7 @@ impl DefaultFighter {
 
     pub fn new() -> Self {
         return Self {
-            radar: Radar::new(UniqueContactBoard::new()),
+            radar: CompositeRadar::new(UniqueContactBoard::new()),
             radio: Radio::new(),
 
             acceleration: vec2(0.0, 0.0),

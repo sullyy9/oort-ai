@@ -2,19 +2,19 @@ use oort_api::prelude::{Class, Vec2};
 
 use crate::math::{geometry::Ellipse, kinematics::Position};
 
-use super::{interface::RadarContact, SearchContact, TrackedContact};
+use super::{interface::RadarContact, SearchContact, TrackedContact, TrackedRadarContact};
 
 ////////////////////////////////////////////////////////////////
 
 #[derive(Clone, PartialEq, Debug)]
-pub enum Contact {
-    Search(SearchContact),
-    Tracked(TrackedContact),
+pub enum Contact<S: RadarContact, T: TrackedRadarContact> {
+    Search(S),
+    Tracked(T),
 }
 
 ////////////////////////////////////////////////////////////////
 
-impl Position for Contact {
+impl<S: RadarContact, T: TrackedRadarContact> Position for Contact<S, T> {
     fn position(&self) -> Vec2 {
         return match self {
             Self::Search(contact) => contact.position(),
@@ -25,7 +25,7 @@ impl Position for Contact {
 
 ////////////////////////////////////////////////////////////////
 
-impl Contact {
+impl<S: RadarContact, T: TrackedRadarContact<AreaShape = S::AreaShape>> Contact<S, T> {
     pub fn time_elapsed(&self) -> f64 {
         return match self {
             Self::Search(contact) => contact.time_elapsed(),
@@ -40,7 +40,7 @@ impl Contact {
         };
     }
 
-    pub fn get_area_after(&self, time: f64) -> Ellipse {
+    pub fn get_area_after(&self, time: f64) -> S::AreaShape {
         return match self {
             Self::Search(contact) => contact.get_area_after(time),
             Self::Tracked(contact) => contact.get_area_after(time),

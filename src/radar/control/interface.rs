@@ -1,6 +1,9 @@
 use oort_api::prelude::*;
 
-use crate::math::kinematics::{Acceleration, Position};
+use crate::{
+    math::kinematics::{Acceleration, Position},
+    radar::contacts::{RadarContact, TrackedRadarContact},
+};
 
 ////////////////////////////////////////////////////////////////
 
@@ -46,8 +49,8 @@ pub trait RadarControl {
 
 ////////////////////////////////////////////////////////////////
 
-pub trait SearchRadarControl {
-    type Contact;
+pub trait SearchRadarControl: Default {
+    type Contact: RadarContact;
 
     fn scan<T: Position>(&mut self, emitter: &T) -> Option<Self::Contact>;
     fn adjust<T: Acceleration>(&self, emitter: &T);
@@ -55,8 +58,8 @@ pub trait SearchRadarControl {
 
 ////////////////////////////////////////////////////////////////
 
-pub trait TrackingRadarControl {
-    type Contact;
+pub trait TrackingRadarControl: Default {
+    type Contact: TrackedRadarContact;
 
     fn scan<T: Position>(&mut self, emitter: &T, target: Self::Contact) -> Option<Self::Contact>;
     fn adjust<T: Acceleration>(&self, emitter: &T, target: &Self::Contact);

@@ -2,7 +2,10 @@ use std::collections::BTreeMap;
 
 use crate::{draw::Colour, math::geometry::Shape, radar::contacts::Contact};
 
-use super::interface::ContactBoard;
+use super::{
+    contacts::{RadarContact, TrackedRadarContact},
+    interface::ContactBoard,
+};
 
 ////////////////////////////////////////////////////////////////
 
@@ -11,11 +14,14 @@ use super::interface::ContactBoard;
 /// A contact board that ensures each conatined contact is unique.
 ///
 #[derive(Clone, PartialEq, Debug, Default)]
-pub struct UniqueContactBoard(BTreeMap<usize, Contact>);
+pub struct UniqueContactBoard<S, T>(BTreeMap<usize, Contact<S, T>>)
+where
+    S: RadarContact,
+    T: TrackedRadarContact;
 
 ////////////////////////////////////////////////////////////////
 
-impl UniqueContactBoard {
+impl<S: RadarContact, T: TrackedRadarContact> UniqueContactBoard<S, T> {
     pub fn new() -> Self {
         return Self(BTreeMap::new());
     }
@@ -23,9 +29,9 @@ impl UniqueContactBoard {
 
 ////////////////////////////////////////////////////////////////
 
-impl IntoIterator for UniqueContactBoard {
-    type Item = <BTreeMap<usize, Contact> as IntoIterator>::Item;
-    type IntoIter = <BTreeMap<usize, Contact> as IntoIterator>::IntoIter;
+impl<S: RadarContact, T: TrackedRadarContact> IntoIterator for UniqueContactBoard<S, T> {
+    type Item = <BTreeMap<usize, Contact<S, T>> as IntoIterator>::Item;
+    type IntoIter = <BTreeMap<usize, Contact<S, T>> as IntoIterator>::IntoIter;
 
     fn into_iter(self) -> Self::IntoIter {
         return self.0.into_iter();
@@ -34,26 +40,30 @@ impl IntoIterator for UniqueContactBoard {
 
 ////////////////////////////////////////////////////////////////
 
-impl ContactBoard for UniqueContactBoard {
+impl<S, T> ContactBoard<S, T> for UniqueContactBoard<S, T>
+where
+    S: RadarContact,
+    T: TrackedRadarContact<AreaShape = S::AreaShape>,
+{
     type ID = usize;
-    type Iter<'a> = std::collections::btree_map::Iter<'a, usize, Contact>;
+    type Iter<'a> = std::collections::btree_map::Iter<'a, usize, Contact<S, T>> where T: 'a, S: 'a;
 
-    fn add(&mut self, contact: Contact) -> Self::ID {
+    fn add(&mut self, contact: Contact<S, T>) -> Self::ID {
         return match contact {
             Contact::Search(contact) => self.add_search_contact(Contact::Search(contact)),
             Contact::Tracked(contact) => self.add_tracked_contact(Contact::Tracked(contact)),
         };
     }
 
-    fn update(&mut self, id: Self::ID, contact: Contact) {
+    fn update(&mut self, id: Self::ID, contact: Contact<S, T>) {
         self.0.insert(id, contact);
     }
 
-    fn get(&self, id: Self::ID) -> Option<&Contact> {
+    fn get(&self, id: Self::ID) -> Option<&Contact<S, T>> {
         return self.0.get(&id);
     }
 
-    fn remove(&mut self, id: Self::ID) -> Option<Contact> {
+    fn remove(&mut self, id: Self::ID) -> Option<Contact<S, T>> {
         return self.0.remove(&id);
     }
 
@@ -79,8 +89,12 @@ impl ContactBoard for UniqueContactBoard {
 
 ////////////////////////////////////////////////////////////////
 
-impl UniqueContactBoard {
-    fn add_search_contact(&mut self, contact: Contact) -> usize {
+impl<S, T> UniqueContactBoard<S, T>
+where
+    S: RadarContact,
+    T: TrackedRadarContact<AreaShape = S::AreaShape>,
+{
+    fn add_search_contact(&mut self, contact: Contact<S, T>) -> usize {
         // Find any contacts matching class and position.
         let contact_area = contact.get_area_after(contact.time_elapsed());
 
@@ -115,7 +129,7 @@ impl UniqueContactBoard {
         return id;
     }
 
-    fn add_tracked_contact(&mut self, contact: Contact) -> usize {
+    fn add_tracked_contact(&mut self, contact: Contact<S, T>) -> usize {
         // Find any contacts matching class and position.
         let matches = self.0.iter();
         let matches = matches.filter(|(_, c)| c.class() == contact.class());
@@ -158,7 +172,7 @@ mod tests {
     fn search_contact(
         #[default(Class::Fighter)] class: Class,
         #[default(vec2(0.0, 0.0))] position: Vec2,
-    ) -> Contact {
+    ) -> Contact<SearchContact, TrackedContact> {
         let scan = ScanResult {
             class,
             position,
@@ -183,7 +197,7 @@ mod tests {
     fn tracked_contact(
         #[default(Class::Fighter)] class: Class,
         #[default(vec2(0.0, 0.0))] position: Vec2,
-    ) -> Contact {
+    ) -> Contact<SearchContact, TrackedContact> {
         let scan = ScanResult {
             class,
             position,
@@ -219,7 +233,10 @@ mod tests {
         search_contact(Class::Fighter, vec2(0.0, 0.0)),
         search_contact(Class::Fighter, vec2(100.0, 0.0))
     )]
-    fn test_add_success(#[case] first: Contact, #[case] second: Contact) {
+    fn test_add_success(
+        #[case] first: Contact<SearchContact, TrackedContact>,
+        #[case] second: Contact<SearchContact, TrackedContact>,
+    ) {
         let mut board = UniqueContactBoard::new();
 
         let id1 = board.add(first.clone());
@@ -245,7 +262,10 @@ mod tests {
         search_contact(Class::Fighter, vec2(0.0, 0.0)),
         tracked_contact(Class::Fighter, vec2(0.0, 0.0))
     )]
-    fn test_add_overwrites(#[case] first: Contact, #[case] second: Contact) {
+    fn test_add_overwrites(
+        #[case] first: Contact<SearchContact, TrackedContact>,
+        #[case] second: Contact<SearchContact, TrackedContact>,
+    ) {
         let mut board = UniqueContactBoard::new();
 
         assert!(second.get_area_after(0.0).contains(&first));
@@ -269,7 +289,10 @@ mod tests {
         tracked_contact(Class::Fighter, vec2(0.0, 0.0)),
         search_contact(Class::Fighter, vec2(0.0, 0.0))
     )]
-    fn test_add_dropped(#[case] first: Contact, #[case] second: Contact) {
+    fn test_add_dropped(
+        #[case] first: Contact<SearchContact, TrackedContact>,
+        #[case] second: Contact<SearchContact, TrackedContact>,
+    ) {
         let mut board = UniqueContactBoard::new();
 
         assert!(second.get_area_after(0.0).contains(&first));

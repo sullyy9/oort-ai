@@ -36,6 +36,14 @@ impl SearchRadar {
 
 ////////////////////////////////////////////////////////////////
 
+impl Default for SearchRadar {
+    fn default() -> Self {
+        return Self::new();
+    }
+}
+
+////////////////////////////////////////////////////////////////
+
 impl SearchRadarControl for SearchRadar {
     type Contact = SearchContact;
 

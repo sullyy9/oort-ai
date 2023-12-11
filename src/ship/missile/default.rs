@@ -11,17 +11,15 @@ use super::{
     },
     radar::{
         board::{ContactBoard, UniqueContactBoard},
-        contacts::Contact,
-        RadarManager,
+        contacts::{Contact, SearchContact, TrackedContact},
+        CompositeRadar,
     },
     radio::{Radio, RadioMessage},
     stats::MaxAcceleration,
 };
 
-type Radar = RadarManager<UniqueContactBoard>;
-
 pub struct DefaultMissile {
-    radar: Radar,
+    radar: CompositeRadar,
     radio: Radio,
 
     target_position: Option<Vec2>,
@@ -109,7 +107,7 @@ impl DefaultMissile {
         };
 
         return Self {
-            radar: Radar::new(UniqueContactBoard::new()),
+            radar: CompositeRadar::new(UniqueContactBoard::new()),
             radio,
 
             target_position,

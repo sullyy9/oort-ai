@@ -6,14 +6,19 @@ use crate::math::kinematics::{Acceleration, Position};
 
 use super::{
     board::ContactBoard,
-    contacts::{Contact, TrackedContact},
-    control::{SearchRadar, SearchRadarControl, TrackingRadar, TrackingRadarControl},
+    contacts::Contact,
+    control::{SearchRadarControl, TrackingRadarControl},
 };
 
 ////////////////////////////////////////////////////////////////
 
 #[derive(Clone, PartialEq, Debug)]
-pub struct RadarManager<Board: ContactBoard> {
+pub struct CompositeRadar<SearchRadar, TrackingRadar, Board>
+where
+    SearchRadar: SearchRadarControl,
+    TrackingRadar: TrackingRadarControl,
+    Board: ContactBoard<SearchRadar::Contact, TrackingRadar::Contact>,
+{
     pub contacts: Board,
 
     tracked: BTreeSet<Board::ID>,
@@ -30,8 +35,11 @@ pub enum Error {
 
 ////////////////////////////////////////////////////////////////
 
-impl<Board: ContactBoard> RadarManager<Board>
+impl<SearchRadar, TrackingRadar, Board> CompositeRadar<SearchRadar, TrackingRadar, Board>
 where
+    SearchRadar: SearchRadarControl,
+    TrackingRadar: TrackingRadarControl,
+    Board: ContactBoard<SearchRadar::Contact, TrackingRadar::Contact>,
     Board::ID: Ord + Clone,
 {
     pub fn new(board: Board) -> Self {
@@ -41,17 +49,21 @@ where
             tracked: BTreeSet::new(),
             track_index: 0,
 
-            search: SearchRadar::new(),
-            track: TrackingRadar::new(),
+            search: SearchRadar::default(),
+            track: TrackingRadar::default(),
         };
     }
 }
 
 ////////////////////////////////////////////////////////////////
 
-impl<Board: ContactBoard> RadarManager<Board>
+impl<SearchRadar, TrackingRadar, Board> CompositeRadar<SearchRadar, TrackingRadar, Board>
 where
+    SearchRadar: SearchRadarControl,
+    TrackingRadar: TrackingRadarControl,
+    Board: ContactBoard<SearchRadar::Contact, TrackingRadar::Contact>,
     Board::ID: Ord + Copy,
+    TrackingRadar::Contact: From<SearchRadar::Contact> + for<'a> From<&'a SearchRadar::Contact>,
 {
     pub fn scan<T: Position>(&mut self, emitter: &T) {
         let tracked_id = self.tracked.iter().nth(self.track_index).cloned();
@@ -61,7 +73,7 @@ where
                 .contacts
                 .remove(id)
                 .map(|c| match c {
-                    Contact::Search(contact) => TrackedContact::from(contact),
+                    Contact::Search(contact) => TrackingRadar::Contact::from(contact),
                     Contact::Tracked(contact) => contact,
                 })
                 .and_then(|c| self.track.scan(emitter, c))
@@ -89,9 +101,9 @@ where
         if let Some(id) = tracked_id {
             match self.contacts.get(*id) {
                 Some(Contact::Tracked(contact)) => self.track.adjust(emitter, contact),
-                Some(Contact::Search(contact)) => {
-                    self.track.adjust(emitter, &TrackedContact::from(contact))
-                }
+                Some(Contact::Search(contact)) => self
+                    .track
+                    .adjust(emitter, &TrackingRadar::Contact::from(contact)),
                 None => debug!("!!! => contact not found"),
             }
         } else {
@@ -102,8 +114,11 @@ where
 
 ////////////////////////////////////////////////////////////////
 
-impl<Board: ContactBoard> RadarManager<Board>
+impl<SearchRadar, TrackingRadar, Board> CompositeRadar<SearchRadar, TrackingRadar, Board>
 where
+    SearchRadar: SearchRadarControl,
+    TrackingRadar: TrackingRadarControl,
+    Board: ContactBoard<SearchRadar::Contact, TrackingRadar::Contact>,
     Board::ID: Ord + Copy,
 {
     pub fn start_tracking(&mut self, id: Board::ID) -> Result<(), Error> {
@@ -122,8 +137,12 @@ where
 
 ////////////////////////////////////////////////////////////////
 
-impl<Board: ContactBoard> RadarManager<Board>
+impl<SearchRadar, TrackingRadar, Board> CompositeRadar<SearchRadar, TrackingRadar, Board>
 where
+    SearchRadar: SearchRadarControl,
+    TrackingRadar: TrackingRadarControl,
+    Board: ContactBoard<SearchRadar::Contact, TrackingRadar::Contact>,
+    Board::ID: Ord + Copy,
     Board::ID: std::fmt::Debug,
 {
     pub fn draw_contacts(&self) {

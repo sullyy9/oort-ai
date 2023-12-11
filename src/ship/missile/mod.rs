@@ -1,7 +1,7 @@
 mod default;
 
 // Imports.
-use super::{control, draw, math, radar, radio, stats};
+use super::{class, control, draw, math, radar, radio, stats};
 
 // Exports.
 pub use self::default::DefaultMissile;

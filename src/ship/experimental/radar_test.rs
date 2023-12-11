@@ -1,5 +1,7 @@
 use oort_api::prelude::*;
 
+use crate::radar::contacts::{SearchContact, TrackedContact};
+
 use super::{
     control::{Rotation, Translation},
     draw::{self, Colour},
@@ -9,16 +11,14 @@ use super::{
     radar::{
         board::{ContactBoard, UniqueContactBoard},
         contacts::Contact,
-        RadarManager,
+        CompositeRadar,
     },
 };
-
-type Radar = RadarManager<UniqueContactBoard>;
 
 ////////////////////////////////////////////////////////////////
 
 pub struct RadarTester {
-    radar: Radar,
+    radar: CompositeRadar,
 
     acceleration: Vec2,
 
@@ -92,7 +92,7 @@ impl RadarTester {
         debug!("spawn missile team 1 position (3000, 3000) heading 0");
 
         return Self {
-            radar: Radar::new(UniqueContactBoard::new()),
+            radar: CompositeRadar::new(UniqueContactBoard::new()),
             acceleration: vec2(0.0, 0.0),
             target: None,
         };
