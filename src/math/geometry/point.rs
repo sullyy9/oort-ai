@@ -56,6 +56,12 @@ impl From<Vec2> for Point {
     }
 }
 
+impl From<Point> for Vec2 {
+    fn from(value: Point) -> Self {
+        return value.0;
+    }
+}
+
 ////////////////////////////////////////////////////////////////
 // operations
 ////////////////////////////////////////////////////////////////
@@ -76,7 +82,7 @@ impl Point {
         return self.0.distance(other.0);
     }
 
-    pub fn translated<T: AsVector>(&self, vector: &T) -> Self {
+    pub fn translated_by<T: AsVector>(&self, vector: &T) -> Self {
         let vector = vector.as_vector();
         return Self(self.0 + vector.0);
     }
