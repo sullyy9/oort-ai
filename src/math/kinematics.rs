@@ -2,6 +2,8 @@ use std::f64::consts::PI;
 
 use oort_api::prelude::*;
 
+use super::geometry::AsPoint;
+
 pub struct Circle {
     pub centre: Vec2,
     pub radius: f64,
@@ -72,6 +74,14 @@ pub trait Position {
 impl Position for Vec2 {
     fn position(&self) -> Vec2 {
         return *self;
+    }
+}
+
+/// TODO Remove.
+impl<T: Position> AsPoint for T {
+    fn as_point(&self) -> super::geometry::Point {
+        let point = self.position();
+        return super::geometry::Point::new(point.x, point.y);
     }
 }
 
