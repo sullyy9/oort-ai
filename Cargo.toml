@@ -13,4 +13,5 @@ oort_api = "0.78.2"
 rustsourcebundler = "0.11.3"
 
 [dev-dependencies]
+mockall = "0.12.0"
 rstest = "0.18.2"

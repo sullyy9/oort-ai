@@ -1,6 +1,6 @@
-use oort_api::prelude::Vec2;
+use crate::draw::Colour;
 
-use crate::{draw::Colour, math::kinematics::Position};
+use super::{point::AsPoint, vector::AsVector};
 
 ////////////////////////////////////////////////////////////////
 
@@ -8,6 +8,7 @@ use crate::{draw::Colour, math::kinematics::Position};
 /// -----------
 /// Common interface of 2D shapes.
 ///
+#[cfg_attr(test, mockall::automock)]
 pub trait Shape {
     /// Description
     /// -----------
@@ -17,7 +18,8 @@ pub trait Shape {
     /// ---------
     /// * `vector` - Vector to translate the ellipse by.
     ///
-    fn translate(&mut self, vector: &Vec2);
+    #[cfg_attr(test, mockall::concretize)]
+    fn translate<T: AsVector>(&mut self, vector: &T);
 
     /// Description
     /// -----------
@@ -28,7 +30,8 @@ pub trait Shape {
     /// * `point` - Point or object implementing Position. Only tests if the central point of an
     ///             object is contained.
     ///
-    fn contains<T: Position>(&self, point: &T) -> bool;
+    #[cfg_attr(test, mockall::concretize)]
+    fn contains<T: AsPoint>(&self, point: &T) -> bool;
 
     /// Description
     /// -----------
@@ -39,7 +42,8 @@ pub trait Shape {
     /// * `point` - Point or object implementing Position. The returned distance is measured to the
     ///             objects central point, not it's closest.
     ///
-    fn min_distance_to<T: Position>(&self, point: &T) -> f64;
+    #[cfg_attr(test, mockall::concretize)]
+    fn min_distance_to<T: AsPoint>(&self, point: &T) -> f64;
 
     /// Description
     /// -----------
@@ -50,7 +54,8 @@ pub trait Shape {
     /// * `point` - Point or object implementing Position. The returned distance is measured to the
     ///             objects central point, not it's furthest.
     ///
-    fn max_distance_to<T: Position>(&self, point: &T) -> f64;
+    #[cfg_attr(test, mockall::concretize)]
+    fn max_distance_to<T: AsPoint>(&self, point: &T) -> f64;
 
     /// Description
     /// -----------
@@ -65,7 +70,8 @@ pub trait Shape {
     /// -------
     /// Tuple where the first element is the smaller distance and the second is the greater.
     ///
-    fn minmax_distance_to<T: Position>(&self, point: &T) -> (f64, f64);
+    #[cfg_attr(test, mockall::concretize)]
+    fn minmax_distance_to<T: AsPoint>(&self, point: &T) -> (f64, f64);
 
     /// Description
     /// -----------

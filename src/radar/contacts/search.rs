@@ -1,6 +1,6 @@
 use oort_api::prelude::*;
 
-use crate::math::geometry::{Ellipse, EllipticalShape, Shape};
+use crate::math::geometry::{Ellipse, EllipticalShape, Shape, Vector};
 use crate::math::kinematics::{Position, Velocity};
 use crate::ship::stats::MaxAcceleration;
 
@@ -97,7 +97,7 @@ impl RadarContact for SearchContact {
         let mut area = self.get_initial_area();
 
         // Move the area according to it's approximate velocity.
-        area.translate(&(self.velocity * time));
+        area.translate(&Vector::from(self.velocity * time));
 
         // Expand the area to take into account velocity error and possible accleration.
         let max_accel = MaxAcceleration::from(self.class);

@@ -3,13 +3,17 @@ use oort_api::prelude::*;
 use crate::draw::{self, Colour};
 use crate::math::kinematics::Position;
 
-use super::shape::{EllipticalShape, Shape};
+use super::{
+    point::{AsPoint, Point},
+    shape::{EllipticalShape, Shape},
+    vector::{AsVector, Vector},
+};
 
 ////////////////////////////////////////////////////////////////
 
 #[derive(Clone, PartialEq, Debug)]
 pub struct Ellipse {
-    centre: Vec2,
+    centre: Point,
     orientation: f64,
     width: f64,
     height: f64,
@@ -19,7 +23,7 @@ pub struct Ellipse {
 
 impl Position for Ellipse {
     fn position(&self) -> Vec2 {
-        return self.centre;
+        return self.centre.clone().into();
     }
 }
 
@@ -31,19 +35,19 @@ impl Ellipse {
     /// Create a new ellipse.
     /// Since +x axis is heading 0, height is size along the x axis.
     ///
-    pub fn new<T: Position>(centre: &T, orientation: f64, width: f64, height: f64) -> Self {
+    pub fn new<T: AsPoint>(centre: &T, orientation: f64, width: f64, height: f64) -> Self {
         // Make them always be W I D E B O I S. That way we know which axis to iterate over when
         // drawing.
         return if width > height {
             Self {
-                centre: centre.position(),
+                centre: centre.as_point(),
                 orientation: orientation + std::f64::consts::FRAC_PI_2,
                 width: height,
                 height: width,
             }
         } else {
             return Self {
-                centre: centre.position(),
+                centre: centre.as_point(),
                 orientation,
                 width,
                 height,
@@ -55,37 +59,46 @@ impl Ellipse {
 ////////////////////////////////////////////////////////////////
 
 impl Shape for Ellipse {
-    fn translate(&mut self, vector: &Vec2) {
-        self.centre += vector;
+    fn translate<T: AsVector>(&mut self, vector: &T) {
+        let vector = vector.as_vector();
+        self.centre = self.centre.translated_by(&vector);
     }
 
-    fn contains<T: Position>(&self, point: &T) -> bool {
-        let point = point.position_relative_to(self);
-        let point = point.rotate(-self.orientation);
+    fn contains<T: AsPoint>(&self, point: &T) -> bool {
+        let point = point.as_point();
+        let vector = point
+            .vector_to(&Point::from(self.position()))
+            .rotated(-self.orientation);
 
         let a = self.height / 2.0;
         let b = self.width / 2.0;
 
-        let xpart = (point.x).powi(2) / a.powi(2);
-        let ypart = (point.y).powi(2) / b.powi(2);
+        let xpart = (vector.x()).powi(2) / a.powi(2);
+        let ypart = (vector.y()).powi(2) / b.powi(2);
         return (xpart + ypart) <= 1.0;
     }
 
-    fn min_distance_to<T: Position>(&self, point: &T) -> f64 {
+    fn min_distance_to<T: AsPoint>(&self, point: &T) -> f64 {
+        let point = point.as_point();
+
         let centre_distance = point.distance_to(&self.centre);
         let radius = self.radius(point.bearing_to(&self.centre));
 
         return (centre_distance - radius).abs();
     }
 
-    fn max_distance_to<T: Position>(&self, point: &T) -> f64 {
+    fn max_distance_to<T: AsPoint>(&self, point: &T) -> f64 {
+        let point = point.as_point();
+
         let centre_distance = point.distance_to(&self.centre);
         let radius = self.radius(point.bearing_to(&self.centre));
 
         return centre_distance + radius;
     }
 
-    fn minmax_distance_to<T: Position>(&self, point: &T) -> (f64, f64) {
+    fn minmax_distance_to<T: AsPoint>(&self, point: &T) -> (f64, f64) {
+        let point = point.as_point();
+
         let centre_distance = point.distance_to(&self.centre);
         let radius = self.radius(point.bearing_to(&self.centre));
 
@@ -108,30 +121,35 @@ impl Shape for Ellipse {
 
         for i in 0..(POINTS / 2) {
             let x = -a + (i as f64 * step);
-            points.push(vec2(x, y(x)));
+            points.push(Vector::new(x, y(x)));
         }
-        points.push(vec2(a, y(a)));
+        points.push(Vector::new(a, y(a)));
 
         // So far we only have half of the shape but the other half is just a reflection over the
         // x axis.
         for i in (1..(points.len() - 1)).rev() {
             let p = &points[i];
-            points.push(vec2(p.x, -p.y));
+            points.push(Vector::new(p.x(), -p.y()));
         }
 
         // So far the shape has been constructed without it's correct orrientation and around the
         // origin. Rotate and move it into the correct position.
-        points
-            .iter_mut()
-            .for_each(|p| *p = p.rotate(self.orientation));
-        points.iter_mut().for_each(|p| *p += self.centre);
+        let points: Vec<Point> = points
+            .iter()
+            .map(|p| p.rotated(self.orientation))
+            .map(|p| self.centre.translated_by(&p))
+            .collect();
 
         // Draw the shape.
         for pair in points.windows(2) {
             let (p1, p2) = (&pair[0], &pair[1]);
-            draw::line(p1, p2, colour);
+            draw::line(&Vec2::from(p1.clone()), &Vec2::from(p2.clone()), colour);
         }
-        draw::line(points.first().unwrap(), points.last().unwrap(), colour);
+        draw::line(
+            &Vec2::from(points.first().unwrap().clone()),
+            &Vec2::from(points.last().unwrap().clone()),
+            colour,
+        );
     }
 }
 
@@ -189,59 +207,74 @@ mod tests {
 
     #[test]
     fn test_contains() {
-        let ellipse = Ellipse::new(&vec2(0.0, 0.0), 0.0, 5.0, 10.0);
+        let ellipse = Ellipse::new(&Point::new(0.0, 0.0), 0.0, 5.0, 10.0);
 
-        assert!(ellipse.contains(&vec2(4.0, 0.0)));
-        assert!(ellipse.contains(&vec2(0.0, 2.0)));
+        assert!(ellipse.contains(&Point::new(4.0, 0.0)));
+        assert!(ellipse.contains(&Point::new(0.0, 2.0)));
 
-        assert!(!ellipse.contains(&vec2(0.0, 3.0)));
-        assert!(!ellipse.contains(&vec2(0.0, -6.0)));
-        assert!(!ellipse.contains(&vec2(5.0, -6.0)));
-        assert!(!ellipse.contains(&vec2(0.0, 6.0)));
-        assert!(!ellipse.contains(&vec2(6.0, 0.0)));
+        assert!(!ellipse.contains(&Point::new(0.0, 3.0)));
+        assert!(!ellipse.contains(&Point::new(0.0, -6.0)));
+        assert!(!ellipse.contains(&Point::new(5.0, -6.0)));
+        assert!(!ellipse.contains(&Point::new(0.0, 6.0)));
+        assert!(!ellipse.contains(&Point::new(6.0, 0.0)));
 
-        let ellipse = Ellipse::new(&vec2(0.0, 0.0), std::f64::consts::FRAC_PI_4, 5.0, 10.0);
-        assert!(ellipse.contains(&vec2(3.0, 3.0)));
-        assert!(!ellipse.contains(&vec2(-3.0, 3.0)));
+        let ellipse = Ellipse::new(
+            &Point::new(0.0, 0.0),
+            std::f64::consts::FRAC_PI_4,
+            5.0,
+            10.0,
+        );
+        assert!(ellipse.contains(&Point::new(3.0, 3.0)));
+        assert!(!ellipse.contains(&Point::new(-3.0, 3.0)));
     }
 
     #[test]
     fn test_max_distance_to() {
-        let ellipse = Ellipse::new(&vec2(0.0, 5.0), 0.0, 5.0, 10.0);
+        let ellipse = Ellipse::new(&Point::new(0.0, 5.0), 0.0, 5.0, 10.0);
 
-        assert_eq!(ellipse.max_distance_to(&vec2(0.0, 0.0)), 7.5);
-        assert_eq!(ellipse.max_distance_to(&vec2(0.0, 10.0)), 7.5);
-        assert_eq!(ellipse.max_distance_to(&vec2(5.0, 5.0)), 10.0);
-        assert_eq!(ellipse.max_distance_to(&vec2(-5.0, 5.0)), 10.0);
+        assert_eq!(ellipse.max_distance_to(&Point::new(0.0, 0.0)), 7.5);
+        assert_eq!(ellipse.max_distance_to(&Point::new(0.0, 10.0)), 7.5);
+        assert_eq!(ellipse.max_distance_to(&Point::new(5.0, 5.0)), 10.0);
+        assert_eq!(ellipse.max_distance_to(&Point::new(-5.0, 5.0)), 10.0);
 
         // Questionable behaviour when point is at the centre of the ellipse.
-        assert_eq!(ellipse.max_distance_to(&vec2(0.0, 5.0)), 5.0);
-        assert_eq!(ellipse.max_distance_to(&vec2(0.0, 6.0)), 3.5);
+        assert_eq!(ellipse.max_distance_to(&Point::new(0.0, 5.0)), 5.0);
+        assert_eq!(ellipse.max_distance_to(&Point::new(0.0, 6.0)), 3.5);
 
         // 45 degree angle with tip touching the origin.
         let height = f64::sqrt(5.0_f64.powi(2) + 5.0_f64.powi(2)) * 2.0;
-        let ellipse = Ellipse::new(&vec2(5.0, 5.0), std::f64::consts::FRAC_PI_4, 50.0, height);
+        let ellipse = Ellipse::new(
+            &Point::new(5.0, 5.0),
+            std::f64::consts::FRAC_PI_4,
+            50.0,
+            height,
+        );
 
-        assert_eq!(ellipse.max_distance_to(&vec2(0.0, 0.0)), height);
-        assert_eq!(ellipse.max_distance_to(&vec2(10.0, 10.0)), height);
+        assert_eq!(ellipse.max_distance_to(&Point::new(0.0, 0.0)), height);
+        assert_eq!(ellipse.max_distance_to(&Point::new(10.0, 10.0)), height);
 
         // Above but mirrored.
         let angle = std::f64::consts::FRAC_PI_4 + std::f64::consts::FRAC_PI_2;
-        let ellipse = Ellipse::new(&vec2(5.0, 5.0), angle, 50.0, height);
-        assert_eq!(ellipse.max_distance_to(&vec2(0.0, 10.0)), height);
+        let ellipse = Ellipse::new(&Point::new(5.0, 5.0), angle, 50.0, height);
+        assert_eq!(ellipse.max_distance_to(&Point::new(0.0, 10.0)), height);
     }
 
     #[test]
     fn test_min_distance_to() {
-        let ellipse = Ellipse::new(&vec2(5.0, 0.0), std::f64::consts::FRAC_PI_2, 5.0, 10.0);
+        let ellipse = Ellipse::new(
+            &Point::new(5.0, 0.0),
+            std::f64::consts::FRAC_PI_2,
+            5.0,
+            10.0,
+        );
 
-        assert_eq!(ellipse.min_distance_to(&vec2(0.0, 0.0)), 2.5);
-        assert_eq!(ellipse.min_distance_to(&vec2(10.0, 0.0)), 2.5);
-        assert_eq!(ellipse.min_distance_to(&vec2(5.0, 5.0)), 0.0);
-        assert_eq!(ellipse.min_distance_to(&vec2(5.0, -5.0)), 0.0);
+        assert_eq!(ellipse.min_distance_to(&Point::new(0.0, 0.0)), 2.5);
+        assert_eq!(ellipse.min_distance_to(&Point::new(10.0, 0.0)), 2.5);
+        assert_eq!(ellipse.min_distance_to(&Point::new(5.0, 5.0)), 0.0);
+        assert_eq!(ellipse.min_distance_to(&Point::new(5.0, -5.0)), 0.0);
 
-        assert_eq!(ellipse.min_distance_to(&vec2(5.0, 0.0)), 2.5);
-        assert_eq!(ellipse.min_distance_to(&vec2(5.5, 0.0)), 2.0);
+        assert_eq!(ellipse.min_distance_to(&Point::new(5.0, 0.0)), 2.5);
+        assert_eq!(ellipse.min_distance_to(&Point::new(5.5, 0.0)), 2.0);
     }
 }
 
